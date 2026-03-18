@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum FuelType {
+  SP95
+  Gazole
+  E85
+  GPLc
+  E10
+  SP98
+}
+
+model City {
+  codeInsee String   @id @map("code_insee")
+  name      String
+  zipCode   String   @map("zip_code")
+  latitude  Decimal
+  longitude Decimal
+
+  stations Station[]
+
+  @@map("cities")
+}
+
+model Station {
+  id        Int     @id
+  address   String
+  cityCode  String  @map("city_code")
+  latitude  Decimal
+  longitude Decimal
+  services  Json
+  horaires  Json
+
+  city          City           @relation(fields: [cityCode], references: [codeInsee])
+  currentPrices CurrentPrice[]
+  priceHistory  PriceHistory[]
+  fillUps       FillUp[]
+
+  @@index([latitude, longitude])
+  @@index([cityCode])
+  @@map("stations")
+}
+
+model CurrentPrice {
+  stationId   Int      @map("station_id")
+  fuelType    FuelType @map("fuel_type")
+  price       Decimal
+  updatedAt   DateTime @map("updated_at")
+  isAvailable Boolean  @default(true) @map("is_available")
+
+  station Station @relation(fields: [stationId], references: [id])
+
+  @@id([stationId, fuelType])
+  @@index([stationId, fuelType])
+  @@map("current_prices")
+}
+
+model PriceHistory {
+  id         Int      @id @default(autoincrement())
+  stationId  Int      @map("station_id")
+  fuelType   FuelType @map("fuel_type")
+  price      Decimal
+  recordedAt DateTime @map("recorded_at")
+
+  station Station @relation(fields: [stationId], references: [id])
+
+  @@unique([stationId, fuelType, recordedAt])
+  @@map("price_history")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+
+  vehicles Vehicle[]
+
+  @@map("users")
+}
+
+model Vehicle {
+  id            Int      @id @default(autoincrement())
+  userId        Int      @map("user_id")
+  name          String
+  preferredFuel String   @map("preferred_fuel")
+
+  user    User     @relation(fields: [userId], references: [id])
+  fillUps FillUp[]
+
+  @@map("vehicles")
+}
+
+model FillUp {
+  id         Int      @id @default(autoincrement())
+  vehicleId  Int      @map("vehicle_id")
+  stationId  Int      @map("station_id")
+  fuelType   FuelType @map("fuel_type")
+  kilometers Int
+  liters     Decimal
+  totalPrice Decimal  @map("total_price")
+  date       DateTime
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id])
+  station Station @relation(fields: [stationId], references: [id])
+
+  @@map("fill_ups")
+}
