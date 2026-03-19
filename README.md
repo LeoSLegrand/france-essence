@@ -70,6 +70,10 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
 - Moyennes nationales/départementales des prix par type de carburant.
 - Détail d'une station (Adresse, services JSON, horaires) et son historique de prix récent.
 
+### 3.3 Endpoint Station (MVP)
+- **GET /api/v1/stations/:id**
+  - Retourne les informations de la station + les prix courants.
+
 ---
 
 ## SECTION 4 : SUIVI DE CONSOMMATION (PRIVÉ)
@@ -284,6 +288,12 @@ Checklist rapide apres import:
 ### 7.2 Validation & Sécurité
 - Validation stricte des Payloads et Query Params via **Zod**.
 - Middleware d'erreur centralisé (Masquage des stacks traces en production).
+
+### 7.4 Import automatique du XML (toutes les heures)
+- Téléchargement: https://donnees.roulez-eco.fr/opendata/instantane_ruptures
+- Le fichier `instantane_ruptures.zip` est téléchargé, extrait, puis importé depuis
+  `data/PrixCarburants_instantane_ruptures.xml`.
+- L'ancien XML est supprimé pour ne conserver que le dernier.
 
 ### 7.3 CI/CD et Tests
 - Tests unitaires (Jest) sur la logique métier complexe (ex: Bounding Box, Haversine, Parsing XML).
