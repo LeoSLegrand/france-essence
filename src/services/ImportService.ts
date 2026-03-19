@@ -7,7 +7,7 @@ import { XMLParser } from "fast-xml-parser";
 import iconv from "iconv-lite";
 
 import { Prisma, FuelType } from "../../prisma/generated/prisma/client";
-import prisma from "../config/prisma";
+import prisma, { ensureSqlitePragmas } from "../config/prisma";
 
 type RawPdv = {
   id?: string;
@@ -49,6 +49,7 @@ export default class ImportService {
   private cityLocationIndex = new Map<string, { lat: number; lng: number; names: Set<string> }>();
 
   async processFuelData(xmlZipPath: string): Promise<void> {
+    await ensureSqlitePragmas();
     await this.preloadCityIndexes();
 
     const xmlContent = this.readXmlFromZip(xmlZipPath);
@@ -74,19 +75,33 @@ export default class ImportService {
     const pdvList = parsed.pdv_liste?.pdv;
     const stations = this.toArray(pdvList);
 
-    for (const pdv of stations) {
-      try {
-        await this.importPdv(pdv);
-      } catch (error) {
-        console.error("Fuel import: failed to import station", {
-          stationId: pdv.id,
-          error
-        });
+    const batchSize = Number(process.env.IMPORT_BATCH_SIZE ?? 100);
+    const pauseMs = Number(process.env.IMPORT_BATCH_PAUSE_MS ?? 20);
+    const resolvedBatchSize = Number.isFinite(batchSize) && batchSize > 0 ? Math.floor(batchSize) : 100;
+    const resolvedPauseMs = Number.isFinite(pauseMs) && pauseMs >= 0 ? pauseMs : 20;
+
+    for (let index = 0; index < stations.length; index += resolvedBatchSize) {
+      const batch = stations.slice(index, index + resolvedBatchSize);
+
+      for (const pdv of batch) {
+        try {
+          await this.importPdv(pdv);
+        } catch (error) {
+          console.error("Fuel import: failed to import station", {
+            stationId: pdv.id,
+            error
+          });
+        }
+      }
+
+      if (resolvedPauseMs > 0 && index + resolvedBatchSize < stations.length) {
+        await this.pause(resolvedPauseMs);
       }
     }
   }
 
   async processCityData(csvPath: string): Promise<void> {
+    await ensureSqlitePragmas();
     if (!fs.existsSync(csvPath)) {
       console.warn("City import: CSV not found", { csvPath });
       return;
@@ -747,6 +762,14 @@ export default class ImportService {
     }
 
     throw lastError;
+  }
+
+  private async pause(ms: number): Promise<void> {
+    if (ms <= 0) {
+      return;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   private isRetryable(error: unknown): boolean {

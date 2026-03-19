@@ -10,4 +10,67 @@ export default class StationService {
       }
     });
   }
+
+  async getStationsByRadius(params: { lat: number; lng: number; radius: number; limit: number }) {
+    const { lat, lng, radius, limit } = params;
+    const radiusKm = radius;
+
+    const latDelta = radiusKm / 111.32;
+    const lngDelta = radiusKm / (111.32 * Math.cos(this.degToRad(lat)));
+
+    const minLat = lat - latDelta;
+    const maxLat = lat + latDelta;
+    const minLng = lng - lngDelta;
+    const maxLng = lng + lngDelta;
+
+    const candidates = await prisma.station.findMany({
+      where: {
+        latitude: { gte: minLat, lte: maxLat },
+        longitude: { gte: minLng, lte: maxLng }
+      },
+      select: {
+        id: true,
+        address: true,
+        cityCode: true,
+        postalCode: true,
+        latitude: true,
+        longitude: true,
+        services: true,
+        horaires: true,
+        city: true,
+        currentPrices: true
+      }
+    });
+
+    return candidates
+      .map((station) => {
+        const distance = this.haversineKm(
+          lat,
+          lng,
+          station.latitude.toNumber(),
+          station.longitude.toNumber()
+        );
+        return { ...station, distance };
+      })
+        .filter((station) => station.distance <= radiusKm)
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, limit);
+  }
+
+  private degToRad(deg: number) {
+    return (deg * Math.PI) / 180;
+  }
+
+  private haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
+    const dLat = this.degToRad(lat2 - lat1);
+    const dLng = this.degToRad(lng2 - lng1);
+    const radLat1 = this.degToRad(lat1);
+    const radLat2 = this.degToRad(lat2);
+
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(radLat1) * Math.cos(radLat2) * Math.sin(dLng / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return 6371 * c;
+  }
 }

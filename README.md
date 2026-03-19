@@ -65,6 +65,8 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
 - **Optimisation des performances** : SQLite n'étant pas optimisé nativement pour la géolocalisation, l'API utilise une stratégie en deux étapes :
   1. **Bounding Box (Pré-filtre SQL)** : Calcul en Node.js d'un "carré" autour du point (minLat, maxLat, minLng, maxLng) en fonction du rayon, appliqué dans un `WHERE` SQL. (Réduit le jeu de données de 10 000 à ~100 stations).
   2. **Haversine (Affinement)** : Calcul exact de la distance sur les résultats restants pour exclure les stations dans les coins du carré.
+  - **Validation** : `lat` et `lng` sont obligatoires, `radius` en km (1-200), `limit` optionnel (max 500).
+  - **Sortie** : Résultats triés par distance croissante.
 
 ### 3.2 Statistiques et Détails
 - Moyennes nationales/départementales des prix par type de carburant.
