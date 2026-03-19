@@ -45,6 +45,11 @@ export { Prisma }
  */
 export type City = Prisma.CityModel
 /**
+ * Model CityPostalCode
+ * 
+ */
+export type CityPostalCode = Prisma.CityPostalCodeModel
+/**
  * Model Station
  * 
  */

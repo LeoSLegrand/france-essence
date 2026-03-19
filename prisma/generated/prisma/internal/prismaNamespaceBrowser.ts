@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   City: 'City',
+  CityPostalCode: 'CityPostalCode',
   Station: 'Station',
   CurrentPrice: 'CurrentPrice',
   PriceHistory: 'PriceHistory',
@@ -84,10 +85,20 @@ export const CityScalarFieldEnum = {
 export type CityScalarFieldEnum = (typeof CityScalarFieldEnum)[keyof typeof CityScalarFieldEnum]
 
 
+export const CityPostalCodeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  cityCode: 'cityCode'
+} as const
+
+export type CityPostalCodeScalarFieldEnum = (typeof CityPostalCodeScalarFieldEnum)[keyof typeof CityPostalCodeScalarFieldEnum]
+
+
 export const StationScalarFieldEnum = {
   id: 'id',
   address: 'address',
   cityCode: 'cityCode',
+  postalCode: 'postalCode',
   latitude: 'latitude',
   longitude: 'longitude',
   services: 'services',
@@ -182,4 +193,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

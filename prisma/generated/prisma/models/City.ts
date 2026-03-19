@@ -221,6 +221,7 @@ export type CityWhereInput = {
   latitude?: Prisma.DecimalFilter<"City"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFilter<"City"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   stations?: Prisma.StationListRelationFilter
+  postalCodes?: Prisma.CityPostalCodeListRelationFilter
 }
 
 export type CityOrderByWithRelationInput = {
@@ -230,6 +231,7 @@ export type CityOrderByWithRelationInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   stations?: Prisma.StationOrderByRelationAggregateInput
+  postalCodes?: Prisma.CityPostalCodeOrderByRelationAggregateInput
 }
 
 export type CityWhereUniqueInput = Prisma.AtLeast<{
@@ -242,6 +244,7 @@ export type CityWhereUniqueInput = Prisma.AtLeast<{
   latitude?: Prisma.DecimalFilter<"City"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFilter<"City"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   stations?: Prisma.StationListRelationFilter
+  postalCodes?: Prisma.CityPostalCodeListRelationFilter
 }, "codeInsee">
 
 export type CityOrderByWithAggregationInput = {
@@ -275,6 +278,7 @@ export type CityCreateInput = {
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   stations?: Prisma.StationCreateNestedManyWithoutCityInput
+  postalCodes?: Prisma.CityPostalCodeCreateNestedManyWithoutCityInput
 }
 
 export type CityUncheckedCreateInput = {
@@ -284,6 +288,7 @@ export type CityUncheckedCreateInput = {
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   stations?: Prisma.StationUncheckedCreateNestedManyWithoutCityInput
+  postalCodes?: Prisma.CityPostalCodeUncheckedCreateNestedManyWithoutCityInput
 }
 
 export type CityUpdateInput = {
@@ -293,6 +298,7 @@ export type CityUpdateInput = {
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   stations?: Prisma.StationUpdateManyWithoutCityNestedInput
+  postalCodes?: Prisma.CityPostalCodeUpdateManyWithoutCityNestedInput
 }
 
 export type CityUncheckedUpdateInput = {
@@ -302,6 +308,7 @@ export type CityUncheckedUpdateInput = {
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   stations?: Prisma.StationUncheckedUpdateManyWithoutCityNestedInput
+  postalCodes?: Prisma.CityPostalCodeUncheckedUpdateManyWithoutCityNestedInput
 }
 
 export type CityCreateManyInput = {
@@ -367,6 +374,11 @@ export type CityScalarRelationFilter = {
   isNot?: Prisma.CityWhereInput
 }
 
+export type CityNullableScalarRelationFilter = {
+  is?: Prisma.CityWhereInput | null
+  isNot?: Prisma.CityWhereInput | null
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -379,18 +391,86 @@ export type DecimalFieldUpdateOperationsInput = {
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
+export type CityCreateNestedOneWithoutPostalCodesInput = {
+  create?: Prisma.XOR<Prisma.CityCreateWithoutPostalCodesInput, Prisma.CityUncheckedCreateWithoutPostalCodesInput>
+  connectOrCreate?: Prisma.CityCreateOrConnectWithoutPostalCodesInput
+  connect?: Prisma.CityWhereUniqueInput
+}
+
+export type CityUpdateOneRequiredWithoutPostalCodesNestedInput = {
+  create?: Prisma.XOR<Prisma.CityCreateWithoutPostalCodesInput, Prisma.CityUncheckedCreateWithoutPostalCodesInput>
+  connectOrCreate?: Prisma.CityCreateOrConnectWithoutPostalCodesInput
+  upsert?: Prisma.CityUpsertWithoutPostalCodesInput
+  connect?: Prisma.CityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CityUpdateToOneWithWhereWithoutPostalCodesInput, Prisma.CityUpdateWithoutPostalCodesInput>, Prisma.CityUncheckedUpdateWithoutPostalCodesInput>
+}
+
 export type CityCreateNestedOneWithoutStationsInput = {
   create?: Prisma.XOR<Prisma.CityCreateWithoutStationsInput, Prisma.CityUncheckedCreateWithoutStationsInput>
   connectOrCreate?: Prisma.CityCreateOrConnectWithoutStationsInput
   connect?: Prisma.CityWhereUniqueInput
 }
 
-export type CityUpdateOneRequiredWithoutStationsNestedInput = {
+export type CityUpdateOneWithoutStationsNestedInput = {
   create?: Prisma.XOR<Prisma.CityCreateWithoutStationsInput, Prisma.CityUncheckedCreateWithoutStationsInput>
   connectOrCreate?: Prisma.CityCreateOrConnectWithoutStationsInput
   upsert?: Prisma.CityUpsertWithoutStationsInput
+  disconnect?: Prisma.CityWhereInput | boolean
+  delete?: Prisma.CityWhereInput | boolean
   connect?: Prisma.CityWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.CityUpdateToOneWithWhereWithoutStationsInput, Prisma.CityUpdateWithoutStationsInput>, Prisma.CityUncheckedUpdateWithoutStationsInput>
+}
+
+export type CityCreateWithoutPostalCodesInput = {
+  codeInsee: string
+  name: string
+  zipCode: string
+  latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  stations?: Prisma.StationCreateNestedManyWithoutCityInput
+}
+
+export type CityUncheckedCreateWithoutPostalCodesInput = {
+  codeInsee: string
+  name: string
+  zipCode: string
+  latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  stations?: Prisma.StationUncheckedCreateNestedManyWithoutCityInput
+}
+
+export type CityCreateOrConnectWithoutPostalCodesInput = {
+  where: Prisma.CityWhereUniqueInput
+  create: Prisma.XOR<Prisma.CityCreateWithoutPostalCodesInput, Prisma.CityUncheckedCreateWithoutPostalCodesInput>
+}
+
+export type CityUpsertWithoutPostalCodesInput = {
+  update: Prisma.XOR<Prisma.CityUpdateWithoutPostalCodesInput, Prisma.CityUncheckedUpdateWithoutPostalCodesInput>
+  create: Prisma.XOR<Prisma.CityCreateWithoutPostalCodesInput, Prisma.CityUncheckedCreateWithoutPostalCodesInput>
+  where?: Prisma.CityWhereInput
+}
+
+export type CityUpdateToOneWithWhereWithoutPostalCodesInput = {
+  where?: Prisma.CityWhereInput
+  data: Prisma.XOR<Prisma.CityUpdateWithoutPostalCodesInput, Prisma.CityUncheckedUpdateWithoutPostalCodesInput>
+}
+
+export type CityUpdateWithoutPostalCodesInput = {
+  codeInsee?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  zipCode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  stations?: Prisma.StationUpdateManyWithoutCityNestedInput
+}
+
+export type CityUncheckedUpdateWithoutPostalCodesInput = {
+  codeInsee?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  zipCode?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  stations?: Prisma.StationUncheckedUpdateManyWithoutCityNestedInput
 }
 
 export type CityCreateWithoutStationsInput = {
@@ -399,6 +479,7 @@ export type CityCreateWithoutStationsInput = {
   zipCode: string
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  postalCodes?: Prisma.CityPostalCodeCreateNestedManyWithoutCityInput
 }
 
 export type CityUncheckedCreateWithoutStationsInput = {
@@ -407,6 +488,7 @@ export type CityUncheckedCreateWithoutStationsInput = {
   zipCode: string
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
+  postalCodes?: Prisma.CityPostalCodeUncheckedCreateNestedManyWithoutCityInput
 }
 
 export type CityCreateOrConnectWithoutStationsInput = {
@@ -431,6 +513,7 @@ export type CityUpdateWithoutStationsInput = {
   zipCode?: Prisma.StringFieldUpdateOperationsInput | string
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  postalCodes?: Prisma.CityPostalCodeUpdateManyWithoutCityNestedInput
 }
 
 export type CityUncheckedUpdateWithoutStationsInput = {
@@ -439,6 +522,7 @@ export type CityUncheckedUpdateWithoutStationsInput = {
   zipCode?: Prisma.StringFieldUpdateOperationsInput | string
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  postalCodes?: Prisma.CityPostalCodeUncheckedUpdateManyWithoutCityNestedInput
 }
 
 
@@ -448,10 +532,12 @@ export type CityUncheckedUpdateWithoutStationsInput = {
 
 export type CityCountOutputType = {
   stations: number
+  postalCodes: number
 }
 
 export type CityCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   stations?: boolean | CityCountOutputTypeCountStationsArgs
+  postalCodes?: boolean | CityCountOutputTypeCountPostalCodesArgs
 }
 
 /**
@@ -471,6 +557,13 @@ export type CityCountOutputTypeCountStationsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.StationWhereInput
 }
 
+/**
+ * CityCountOutputType without action
+ */
+export type CityCountOutputTypeCountPostalCodesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CityPostalCodeWhereInput
+}
+
 
 export type CitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   codeInsee?: boolean
@@ -479,6 +572,7 @@ export type CitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   latitude?: boolean
   longitude?: boolean
   stations?: boolean | Prisma.City$stationsArgs<ExtArgs>
+  postalCodes?: boolean | Prisma.City$postalCodesArgs<ExtArgs>
   _count?: boolean | Prisma.CityCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["city"]>
 
@@ -509,6 +603,7 @@ export type CitySelectScalar = {
 export type CityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"codeInsee" | "name" | "zipCode" | "latitude" | "longitude", ExtArgs["result"]["city"]>
 export type CityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   stations?: boolean | Prisma.City$stationsArgs<ExtArgs>
+  postalCodes?: boolean | Prisma.City$postalCodesArgs<ExtArgs>
   _count?: boolean | Prisma.CityCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -518,6 +613,7 @@ export type $CityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "City"
   objects: {
     stations: Prisma.$StationPayload<ExtArgs>[]
+    postalCodes: Prisma.$CityPostalCodePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     codeInsee: string
@@ -920,6 +1016,7 @@ readonly fields: CityFieldRefs;
 export interface Prisma__CityClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   stations<T extends Prisma.City$stationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.City$stationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  postalCodes<T extends Prisma.City$postalCodesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.City$postalCodesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CityPostalCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1366,6 +1463,30 @@ export type City$stationsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.StationScalarFieldEnum | Prisma.StationScalarFieldEnum[]
+}
+
+/**
+ * City.postalCodes
+ */
+export type City$postalCodesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CityPostalCode
+   */
+  select?: Prisma.CityPostalCodeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CityPostalCode
+   */
+  omit?: Prisma.CityPostalCodeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CityPostalCodeInclude<ExtArgs> | null
+  where?: Prisma.CityPostalCodeWhereInput
+  orderBy?: Prisma.CityPostalCodeOrderByWithRelationInput | Prisma.CityPostalCodeOrderByWithRelationInput[]
+  cursor?: Prisma.CityPostalCodeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CityPostalCodeScalarFieldEnum | Prisma.CityPostalCodeScalarFieldEnum[]
 }
 
 /**

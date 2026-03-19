@@ -24,7 +24,10 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
 
 ### 2.1 Sources de données
 1. **Carburants** : Flux gouvernemental `prix-carburants.gouv.fr`. Utilisation exclusive du fichier **Instantané + Ruptures** (`PrixCarburants_instantane_ruptures.xml` fourni en `.zip`).
+  - Champs clés disponibles: `cp` (code postal), `ville` (nom texte), `latitude`, `longitude`, `services`, `horaires`, `prix`, `rupture`.
+  - **Important**: le XML ne fournit pas le code INSEE.
 2. **Villes** : Dataset `data.gouv.fr` (Fichier CSV).
+  - Champs clés: `code_insee`, `nom_standard`, variantes de nom, `code_postal`, `codes_postaux`, `latitude_centre`, `longitude_centre`.
 
 ### 2.2 Stratégie d'importation (Historisation / Time-Series)
 - **Script NPM initial** : `npm run import:data` initialise la BDD (Villes + Flux actuel).
@@ -36,6 +39,21 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
   - **Gestion des Ruptures** : 
     - Présence de `<rupture>` sans date de fin : `is_available` passe à `FALSE` dans `current_prices`.
     - Présence d'un nouveau `<prix>` pour un carburant en rupture : `is_available` repasse à `TRUE`.
+
+  ### 2.3 Stratégie de correspondance Station → Ville
+  Le XML ne contient pas le code INSEE, la correspondance se fait donc via les codes postaux, le nom de ville, et/ou la proximité GPS.
+
+  1. **Méthode simple (déterministe)**
+    - Normaliser les codes postaux (conserver 5 chiffres).
+    - Normaliser les noms (majuscules + suppression des accents) pour comparer `pdv.ville` avec `nom_standard`.
+    - Jointure par `cp` + nom normalisé si possible.
+
+  2. **Méthode robuste (fallback)**
+    - Si ambiguïté ou absence de nom fiable, utiliser la proximité: choisir la commune la plus proche des coordonnées du point de vente (`latitude`, `longitude`) parmi celles partageant le code postal.
+
+  3. **Cas limites**
+    - Codes postaux multiples (`codes_postaux`), CEDEX, homonymes, accents, variations de casse.
+    - Les stations sans correspondance exacte doivent être conservées avec un `cityCode` vide et loggées pour analyse.
 
 ---
 
@@ -96,10 +114,15 @@ cities
   - latitude (DECIMAL(10, 6))
   - longitude (DECIMAL(10, 6))
 
+city_postal_codes
+  - code (VARCHAR)
+  - city_code (FK -> cities.code_insee)
+
 stations
   - id (PK, INT) -- ID officiel
   - address (VARCHAR)
-  - city_code (FK -> cities.code_insee)
+  - city_code (FK -> cities.code_insee, nullable si non resolu)
+  - postal_code (VARCHAR)
   - latitude (DECIMAL(10, 6))
   - longitude (DECIMAL(10, 6))
   - services (JSON) -- Liste des services
@@ -122,6 +145,8 @@ price_history (Historique - Append-only)
 **Index BDD critiques pour les performances :**
 - `stations(latitude, longitude)` (Pour la Bounding Box)
 - `stations(city_code)`
+- `stations(postal_code)`
+- `city_postal_codes(code)`
 - `current_prices(station_id, fuel_type)`
 - `UNIQUE(station_id, fuel_type, recorded_at)` sur `price_history` (Garantit l'idempotence du CRON).
 
@@ -160,15 +185,21 @@ entity "City" as city {
   * code_insee : VARCHAR
   --
   name : VARCHAR
-  zip_code : VARCHAR
   latitude : DECIMAL(10,6)
   longitude : DECIMAL(10,6)
+}
+
+entity "City_Postal_Code" as city_postal_code {
+  * code : VARCHAR
+  --
+  city_code : VARCHAR
 }
 
 entity "Station" as station {
   * id : INT
   --
-  city_code : VARCHAR
+  city_code : VARCHAR (nullable)
+  postal_code : VARCHAR
   address : VARCHAR
   latitude : DECIMAL(10,6)
   longitude : DECIMAL(10,6)
@@ -221,6 +252,7 @@ entity "Fill_Up" as fill_up {
   date : DATETIME
 }
 
+city ||--o{ city_postal_code : contient
 city ||--o{ station : contient
 station ||--o{ current_prices : affiche
 station ||--o{ price_history : archive
@@ -234,6 +266,14 @@ station ||--o{ fill_up : a_lieu
 ![MCD](MCD.png)
 
 ---
+
+## SECTION 9 : VALIDATION IMPORTS
+
+Checklist rapide apres import:
+1. `City import: totals` affiche un nombre de villes proche du nombre de lignes CSV (hors en-tete).
+2. `postalCodes` et `indexedPostalCodeEntries` sont superieurs au nombre de villes (codes multiples).
+3. `Fuel import: totals` affiche un `resolvedStations` proche du total, et les cas `none` sont rares.
+4. Verifier quelques codes postaux critiques (ex: 75016, 13011, 69009) et confirmer que les stations ont un `city_code`.
 
 ## SECTION 7 : PROTOCOLES, SÉCURITÉ ET TESTS
 

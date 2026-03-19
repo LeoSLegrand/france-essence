@@ -24,26 +24,42 @@ model City {
   longitude Decimal
 
   stations Station[]
+  postalCodes CityPostalCode[]
 
   @@map("cities")
 }
 
-model Station {
-  id        Int     @id
-  address   String
-  cityCode  String  @map("city_code")
-  latitude  Decimal
-  longitude Decimal
-  services  Json
-  horaires  Json
+model CityPostalCode {
+  id             Int     @id @default(autoincrement())
+  code           String
+  cityCode       String  @map("city_code")
 
-  city          City           @relation(fields: [cityCode], references: [codeInsee])
+  city City @relation(fields: [cityCode], references: [codeInsee])
+
+  @@index([code])
+  @@index([cityCode])
+  @@unique([code, cityCode])
+  @@map("city_postal_codes")
+}
+
+model Station {
+  id                   Int     @id
+  address              String
+  cityCode             String? @map("city_code")
+  postalCode           String? @map("postal_code")
+  latitude             Decimal
+  longitude            Decimal
+  services             Json
+  horaires             Json
+
+  city          City?          @relation(fields: [cityCode], references: [codeInsee])
   currentPrices CurrentPrice[]
   priceHistory  PriceHistory[]
   fillUps       FillUp[]
 
   @@index([latitude, longitude])
   @@index([cityCode])
+  @@index([postalCode])
   @@map("stations")
 }
 

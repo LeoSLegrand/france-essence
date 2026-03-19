@@ -385,6 +385,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   City: 'City',
+  CityPostalCode: 'CityPostalCode',
   Station: 'Station',
   CurrentPrice: 'CurrentPrice',
   PriceHistory: 'PriceHistory',
@@ -406,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "city" | "station" | "currentPrice" | "priceHistory" | "user" | "vehicle" | "fillUp"
+    modelProps: "city" | "cityPostalCode" | "station" | "currentPrice" | "priceHistory" | "user" | "vehicle" | "fillUp"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -481,6 +482,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CityCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CityCountAggregateOutputType> | number
+        }
+      }
+    }
+    CityPostalCode: {
+      payload: Prisma.$CityPostalCodePayload<ExtArgs>
+      fields: Prisma.CityPostalCodeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CityPostalCodeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPostalCodePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CityPostalCodeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPostalCodePayload>
+        }
+        findFirst: {
+          args: Prisma.CityPostalCodeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPostalCodePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CityPostalCodeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPostalCodePayload>
+        }
+        findMany: {
+          args: Prisma.CityPostalCodeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPostalCodePayload>[]
+        }
+        create: {
+          args: Prisma.CityPostalCodeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPostalCodePayload>
+        }
+        createMany: {
+          args: Prisma.CityPostalCodeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CityPostalCodeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPostalCodePayload>[]
+        }
+        delete: {
+          args: Prisma.CityPostalCodeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPostalCodePayload>
+        }
+        update: {
+          args: Prisma.CityPostalCodeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPostalCodePayload>
+        }
+        deleteMany: {
+          args: Prisma.CityPostalCodeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CityPostalCodeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CityPostalCodeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPostalCodePayload>[]
+        }
+        upsert: {
+          args: Prisma.CityPostalCodeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPostalCodePayload>
+        }
+        aggregate: {
+          args: Prisma.CityPostalCodeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCityPostalCode>
+        }
+        groupBy: {
+          args: Prisma.CityPostalCodeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CityPostalCodeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CityPostalCodeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CityPostalCodeCountAggregateOutputType> | number
         }
       }
     }
@@ -975,10 +1050,20 @@ export const CityScalarFieldEnum = {
 export type CityScalarFieldEnum = (typeof CityScalarFieldEnum)[keyof typeof CityScalarFieldEnum]
 
 
+export const CityPostalCodeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  cityCode: 'cityCode'
+} as const
+
+export type CityPostalCodeScalarFieldEnum = (typeof CityPostalCodeScalarFieldEnum)[keyof typeof CityPostalCodeScalarFieldEnum]
+
+
 export const StationScalarFieldEnum = {
   id: 'id',
   address: 'address',
   cityCode: 'cityCode',
+  postalCode: 'postalCode',
   latitude: 'latitude',
   longitude: 'longitude',
   services: 'services',
@@ -1073,6 +1158,14 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 
@@ -1239,6 +1332,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   city?: Prisma.CityOmit
+  cityPostalCode?: Prisma.CityPostalCodeOmit
   station?: Prisma.StationOmit
   currentPrice?: Prisma.CurrentPriceOmit
   priceHistory?: Prisma.PriceHistoryOmit

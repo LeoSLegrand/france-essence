@@ -42,6 +42,7 @@ export type StationMinAggregateOutputType = {
   id: number | null
   address: string | null
   cityCode: string | null
+  postalCode: string | null
   latitude: runtime.Decimal | null
   longitude: runtime.Decimal | null
 }
@@ -50,6 +51,7 @@ export type StationMaxAggregateOutputType = {
   id: number | null
   address: string | null
   cityCode: string | null
+  postalCode: string | null
   latitude: runtime.Decimal | null
   longitude: runtime.Decimal | null
 }
@@ -58,6 +60,7 @@ export type StationCountAggregateOutputType = {
   id: number
   address: number
   cityCode: number
+  postalCode: number
   latitude: number
   longitude: number
   services: number
@@ -82,6 +85,7 @@ export type StationMinAggregateInputType = {
   id?: true
   address?: true
   cityCode?: true
+  postalCode?: true
   latitude?: true
   longitude?: true
 }
@@ -90,6 +94,7 @@ export type StationMaxAggregateInputType = {
   id?: true
   address?: true
   cityCode?: true
+  postalCode?: true
   latitude?: true
   longitude?: true
 }
@@ -98,6 +103,7 @@ export type StationCountAggregateInputType = {
   id?: true
   address?: true
   cityCode?: true
+  postalCode?: true
   latitude?: true
   longitude?: true
   services?: true
@@ -194,7 +200,8 @@ export type StationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type StationGroupByOutputType = {
   id: number
   address: string
-  cityCode: string
+  cityCode: string | null
+  postalCode: string | null
   latitude: runtime.Decimal
   longitude: runtime.Decimal
   services: runtime.JsonValue
@@ -227,12 +234,13 @@ export type StationWhereInput = {
   NOT?: Prisma.StationWhereInput | Prisma.StationWhereInput[]
   id?: Prisma.IntFilter<"Station"> | number
   address?: Prisma.StringFilter<"Station"> | string
-  cityCode?: Prisma.StringFilter<"Station"> | string
+  cityCode?: Prisma.StringNullableFilter<"Station"> | string | null
+  postalCode?: Prisma.StringNullableFilter<"Station"> | string | null
   latitude?: Prisma.DecimalFilter<"Station"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFilter<"Station"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonFilter<"Station">
   horaires?: Prisma.JsonFilter<"Station">
-  city?: Prisma.XOR<Prisma.CityScalarRelationFilter, Prisma.CityWhereInput>
+  city?: Prisma.XOR<Prisma.CityNullableScalarRelationFilter, Prisma.CityWhereInput> | null
   currentPrices?: Prisma.CurrentPriceListRelationFilter
   priceHistory?: Prisma.PriceHistoryListRelationFilter
   fillUps?: Prisma.FillUpListRelationFilter
@@ -241,7 +249,8 @@ export type StationWhereInput = {
 export type StationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   address?: Prisma.SortOrder
-  cityCode?: Prisma.SortOrder
+  cityCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  postalCode?: Prisma.SortOrderInput | Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   services?: Prisma.SortOrder
@@ -258,12 +267,13 @@ export type StationWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.StationWhereInput[]
   NOT?: Prisma.StationWhereInput | Prisma.StationWhereInput[]
   address?: Prisma.StringFilter<"Station"> | string
-  cityCode?: Prisma.StringFilter<"Station"> | string
+  cityCode?: Prisma.StringNullableFilter<"Station"> | string | null
+  postalCode?: Prisma.StringNullableFilter<"Station"> | string | null
   latitude?: Prisma.DecimalFilter<"Station"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFilter<"Station"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonFilter<"Station">
   horaires?: Prisma.JsonFilter<"Station">
-  city?: Prisma.XOR<Prisma.CityScalarRelationFilter, Prisma.CityWhereInput>
+  city?: Prisma.XOR<Prisma.CityNullableScalarRelationFilter, Prisma.CityWhereInput> | null
   currentPrices?: Prisma.CurrentPriceListRelationFilter
   priceHistory?: Prisma.PriceHistoryListRelationFilter
   fillUps?: Prisma.FillUpListRelationFilter
@@ -272,7 +282,8 @@ export type StationWhereUniqueInput = Prisma.AtLeast<{
 export type StationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   address?: Prisma.SortOrder
-  cityCode?: Prisma.SortOrder
+  cityCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  postalCode?: Prisma.SortOrderInput | Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   services?: Prisma.SortOrder
@@ -290,7 +301,8 @@ export type StationScalarWhereWithAggregatesInput = {
   NOT?: Prisma.StationScalarWhereWithAggregatesInput | Prisma.StationScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Station"> | number
   address?: Prisma.StringWithAggregatesFilter<"Station"> | string
-  cityCode?: Prisma.StringWithAggregatesFilter<"Station"> | string
+  cityCode?: Prisma.StringNullableWithAggregatesFilter<"Station"> | string | null
+  postalCode?: Prisma.StringNullableWithAggregatesFilter<"Station"> | string | null
   latitude?: Prisma.DecimalWithAggregatesFilter<"Station"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalWithAggregatesFilter<"Station"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonWithAggregatesFilter<"Station">
@@ -300,11 +312,12 @@ export type StationScalarWhereWithAggregatesInput = {
 export type StationCreateInput = {
   id: number
   address: string
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
   horaires: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  city: Prisma.CityCreateNestedOneWithoutStationsInput
+  city?: Prisma.CityCreateNestedOneWithoutStationsInput
   currentPrices?: Prisma.CurrentPriceCreateNestedManyWithoutStationInput
   priceHistory?: Prisma.PriceHistoryCreateNestedManyWithoutStationInput
   fillUps?: Prisma.FillUpCreateNestedManyWithoutStationInput
@@ -313,7 +326,8 @@ export type StationCreateInput = {
 export type StationUncheckedCreateInput = {
   id: number
   address: string
-  cityCode: string
+  cityCode?: string | null
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -326,11 +340,12 @@ export type StationUncheckedCreateInput = {
 export type StationUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   horaires?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  city?: Prisma.CityUpdateOneRequiredWithoutStationsNestedInput
+  city?: Prisma.CityUpdateOneWithoutStationsNestedInput
   currentPrices?: Prisma.CurrentPriceUpdateManyWithoutStationNestedInput
   priceHistory?: Prisma.PriceHistoryUpdateManyWithoutStationNestedInput
   fillUps?: Prisma.FillUpUpdateManyWithoutStationNestedInput
@@ -339,7 +354,8 @@ export type StationUpdateInput = {
 export type StationUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
-  cityCode?: Prisma.StringFieldUpdateOperationsInput | string
+  cityCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -352,7 +368,8 @@ export type StationUncheckedUpdateInput = {
 export type StationCreateManyInput = {
   id: number
   address: string
-  cityCode: string
+  cityCode?: string | null
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -362,6 +379,7 @@ export type StationCreateManyInput = {
 export type StationUpdateManyMutationInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -371,7 +389,8 @@ export type StationUpdateManyMutationInput = {
 export type StationUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
-  cityCode?: Prisma.StringFieldUpdateOperationsInput | string
+  cityCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -392,6 +411,7 @@ export type StationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   address?: Prisma.SortOrder
   cityCode?: Prisma.SortOrder
+  postalCode?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   services?: Prisma.SortOrder
@@ -408,6 +428,7 @@ export type StationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   address?: Prisma.SortOrder
   cityCode?: Prisma.SortOrder
+  postalCode?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
 }
@@ -416,6 +437,7 @@ export type StationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   address?: Prisma.SortOrder
   cityCode?: Prisma.SortOrder
+  postalCode?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
 }
@@ -473,12 +495,8 @@ export type StationUncheckedUpdateManyWithoutCityNestedInput = {
   deleteMany?: Prisma.StationScalarWhereInput | Prisma.StationScalarWhereInput[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
 export type StationCreateNestedOneWithoutCurrentPricesInput = {
@@ -526,6 +544,7 @@ export type StationUpdateOneRequiredWithoutFillUpsNestedInput = {
 export type StationCreateWithoutCityInput = {
   id: number
   address: string
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -538,6 +557,7 @@ export type StationCreateWithoutCityInput = {
 export type StationUncheckedCreateWithoutCityInput = {
   id: number
   address: string
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -578,7 +598,8 @@ export type StationScalarWhereInput = {
   NOT?: Prisma.StationScalarWhereInput | Prisma.StationScalarWhereInput[]
   id?: Prisma.IntFilter<"Station"> | number
   address?: Prisma.StringFilter<"Station"> | string
-  cityCode?: Prisma.StringFilter<"Station"> | string
+  cityCode?: Prisma.StringNullableFilter<"Station"> | string | null
+  postalCode?: Prisma.StringNullableFilter<"Station"> | string | null
   latitude?: Prisma.DecimalFilter<"Station"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFilter<"Station"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonFilter<"Station">
@@ -588,11 +609,12 @@ export type StationScalarWhereInput = {
 export type StationCreateWithoutCurrentPricesInput = {
   id: number
   address: string
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
   horaires: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  city: Prisma.CityCreateNestedOneWithoutStationsInput
+  city?: Prisma.CityCreateNestedOneWithoutStationsInput
   priceHistory?: Prisma.PriceHistoryCreateNestedManyWithoutStationInput
   fillUps?: Prisma.FillUpCreateNestedManyWithoutStationInput
 }
@@ -600,7 +622,8 @@ export type StationCreateWithoutCurrentPricesInput = {
 export type StationUncheckedCreateWithoutCurrentPricesInput = {
   id: number
   address: string
-  cityCode: string
+  cityCode?: string | null
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -628,11 +651,12 @@ export type StationUpdateToOneWithWhereWithoutCurrentPricesInput = {
 export type StationUpdateWithoutCurrentPricesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   horaires?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  city?: Prisma.CityUpdateOneRequiredWithoutStationsNestedInput
+  city?: Prisma.CityUpdateOneWithoutStationsNestedInput
   priceHistory?: Prisma.PriceHistoryUpdateManyWithoutStationNestedInput
   fillUps?: Prisma.FillUpUpdateManyWithoutStationNestedInput
 }
@@ -640,7 +664,8 @@ export type StationUpdateWithoutCurrentPricesInput = {
 export type StationUncheckedUpdateWithoutCurrentPricesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
-  cityCode?: Prisma.StringFieldUpdateOperationsInput | string
+  cityCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -652,11 +677,12 @@ export type StationUncheckedUpdateWithoutCurrentPricesInput = {
 export type StationCreateWithoutPriceHistoryInput = {
   id: number
   address: string
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
   horaires: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  city: Prisma.CityCreateNestedOneWithoutStationsInput
+  city?: Prisma.CityCreateNestedOneWithoutStationsInput
   currentPrices?: Prisma.CurrentPriceCreateNestedManyWithoutStationInput
   fillUps?: Prisma.FillUpCreateNestedManyWithoutStationInput
 }
@@ -664,7 +690,8 @@ export type StationCreateWithoutPriceHistoryInput = {
 export type StationUncheckedCreateWithoutPriceHistoryInput = {
   id: number
   address: string
-  cityCode: string
+  cityCode?: string | null
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -692,11 +719,12 @@ export type StationUpdateToOneWithWhereWithoutPriceHistoryInput = {
 export type StationUpdateWithoutPriceHistoryInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   horaires?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  city?: Prisma.CityUpdateOneRequiredWithoutStationsNestedInput
+  city?: Prisma.CityUpdateOneWithoutStationsNestedInput
   currentPrices?: Prisma.CurrentPriceUpdateManyWithoutStationNestedInput
   fillUps?: Prisma.FillUpUpdateManyWithoutStationNestedInput
 }
@@ -704,7 +732,8 @@ export type StationUpdateWithoutPriceHistoryInput = {
 export type StationUncheckedUpdateWithoutPriceHistoryInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
-  cityCode?: Prisma.StringFieldUpdateOperationsInput | string
+  cityCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -716,11 +745,12 @@ export type StationUncheckedUpdateWithoutPriceHistoryInput = {
 export type StationCreateWithoutFillUpsInput = {
   id: number
   address: string
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
   horaires: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  city: Prisma.CityCreateNestedOneWithoutStationsInput
+  city?: Prisma.CityCreateNestedOneWithoutStationsInput
   currentPrices?: Prisma.CurrentPriceCreateNestedManyWithoutStationInput
   priceHistory?: Prisma.PriceHistoryCreateNestedManyWithoutStationInput
 }
@@ -728,7 +758,8 @@ export type StationCreateWithoutFillUpsInput = {
 export type StationUncheckedCreateWithoutFillUpsInput = {
   id: number
   address: string
-  cityCode: string
+  cityCode?: string | null
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -756,11 +787,12 @@ export type StationUpdateToOneWithWhereWithoutFillUpsInput = {
 export type StationUpdateWithoutFillUpsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   horaires?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  city?: Prisma.CityUpdateOneRequiredWithoutStationsNestedInput
+  city?: Prisma.CityUpdateOneWithoutStationsNestedInput
   currentPrices?: Prisma.CurrentPriceUpdateManyWithoutStationNestedInput
   priceHistory?: Prisma.PriceHistoryUpdateManyWithoutStationNestedInput
 }
@@ -768,7 +800,8 @@ export type StationUpdateWithoutFillUpsInput = {
 export type StationUncheckedUpdateWithoutFillUpsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
-  cityCode?: Prisma.StringFieldUpdateOperationsInput | string
+  cityCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -780,6 +813,7 @@ export type StationUncheckedUpdateWithoutFillUpsInput = {
 export type StationCreateManyCityInput = {
   id: number
   address: string
+  postalCode?: string | null
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   services: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -789,6 +823,7 @@ export type StationCreateManyCityInput = {
 export type StationUpdateWithoutCityInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -801,6 +836,7 @@ export type StationUpdateWithoutCityInput = {
 export type StationUncheckedUpdateWithoutCityInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -813,6 +849,7 @@ export type StationUncheckedUpdateWithoutCityInput = {
 export type StationUncheckedUpdateManyWithoutCityInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   services?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -872,11 +909,12 @@ export type StationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   address?: boolean
   cityCode?: boolean
+  postalCode?: boolean
   latitude?: boolean
   longitude?: boolean
   services?: boolean
   horaires?: boolean
-  city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
+  city?: boolean | Prisma.Station$cityArgs<ExtArgs>
   currentPrices?: boolean | Prisma.Station$currentPricesArgs<ExtArgs>
   priceHistory?: boolean | Prisma.Station$priceHistoryArgs<ExtArgs>
   fillUps?: boolean | Prisma.Station$fillUpsArgs<ExtArgs>
@@ -887,53 +925,56 @@ export type StationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   address?: boolean
   cityCode?: boolean
+  postalCode?: boolean
   latitude?: boolean
   longitude?: boolean
   services?: boolean
   horaires?: boolean
-  city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
+  city?: boolean | Prisma.Station$cityArgs<ExtArgs>
 }, ExtArgs["result"]["station"]>
 
 export type StationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   address?: boolean
   cityCode?: boolean
+  postalCode?: boolean
   latitude?: boolean
   longitude?: boolean
   services?: boolean
   horaires?: boolean
-  city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
+  city?: boolean | Prisma.Station$cityArgs<ExtArgs>
 }, ExtArgs["result"]["station"]>
 
 export type StationSelectScalar = {
   id?: boolean
   address?: boolean
   cityCode?: boolean
+  postalCode?: boolean
   latitude?: boolean
   longitude?: boolean
   services?: boolean
   horaires?: boolean
 }
 
-export type StationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "address" | "cityCode" | "latitude" | "longitude" | "services" | "horaires", ExtArgs["result"]["station"]>
+export type StationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "address" | "cityCode" | "postalCode" | "latitude" | "longitude" | "services" | "horaires", ExtArgs["result"]["station"]>
 export type StationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
+  city?: boolean | Prisma.Station$cityArgs<ExtArgs>
   currentPrices?: boolean | Prisma.Station$currentPricesArgs<ExtArgs>
   priceHistory?: boolean | Prisma.Station$priceHistoryArgs<ExtArgs>
   fillUps?: boolean | Prisma.Station$fillUpsArgs<ExtArgs>
   _count?: boolean | Prisma.StationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type StationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
+  city?: boolean | Prisma.Station$cityArgs<ExtArgs>
 }
 export type StationIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
+  city?: boolean | Prisma.Station$cityArgs<ExtArgs>
 }
 
 export type $StationPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Station"
   objects: {
-    city: Prisma.$CityPayload<ExtArgs>
+    city: Prisma.$CityPayload<ExtArgs> | null
     currentPrices: Prisma.$CurrentPricePayload<ExtArgs>[]
     priceHistory: Prisma.$PriceHistoryPayload<ExtArgs>[]
     fillUps: Prisma.$FillUpPayload<ExtArgs>[]
@@ -941,7 +982,8 @@ export type $StationPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     address: string
-    cityCode: string
+    cityCode: string | null
+    postalCode: string | null
     latitude: runtime.Decimal
     longitude: runtime.Decimal
     services: runtime.JsonValue
@@ -1340,7 +1382,7 @@ readonly fields: StationFieldRefs;
  */
 export interface Prisma__StationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  city<T extends Prisma.CityDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CityDefaultArgs<ExtArgs>>): Prisma.Prisma__CityClient<runtime.Types.Result.GetResult<Prisma.$CityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  city<T extends Prisma.Station$cityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Station$cityArgs<ExtArgs>>): Prisma.Prisma__CityClient<runtime.Types.Result.GetResult<Prisma.$CityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   currentPrices<T extends Prisma.Station$currentPricesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Station$currentPricesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CurrentPricePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   priceHistory<T extends Prisma.Station$priceHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Station$priceHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PriceHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fillUps<T extends Prisma.Station$fillUpsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Station$fillUpsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FillUpPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1376,6 +1418,7 @@ export interface StationFieldRefs {
   readonly id: Prisma.FieldRef<"Station", 'Int'>
   readonly address: Prisma.FieldRef<"Station", 'String'>
   readonly cityCode: Prisma.FieldRef<"Station", 'String'>
+  readonly postalCode: Prisma.FieldRef<"Station", 'String'>
   readonly latitude: Prisma.FieldRef<"Station", 'Decimal'>
   readonly longitude: Prisma.FieldRef<"Station", 'Decimal'>
   readonly services: Prisma.FieldRef<"Station", 'Json'>
@@ -1776,6 +1819,25 @@ export type StationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Stations to delete.
    */
   limit?: number
+}
+
+/**
+ * Station.city
+ */
+export type Station$cityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the City
+   */
+  select?: Prisma.CitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the City
+   */
+  omit?: Prisma.CityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CityInclude<ExtArgs> | null
+  where?: Prisma.CityWhereInput
 }
 
 /**

@@ -9,6 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/City'
+export type * from './models/CityPostalCode'
 export type * from './models/Station'
 export type * from './models/CurrentPrice'
 export type * from './models/PriceHistory'
