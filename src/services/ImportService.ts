@@ -75,27 +75,14 @@ export default class ImportService {
     const pdvList = parsed.pdv_liste?.pdv;
     const stations = this.toArray(pdvList);
 
-    const batchSize = Number(process.env.IMPORT_BATCH_SIZE ?? 100);
-    const pauseMs = Number(process.env.IMPORT_BATCH_PAUSE_MS ?? 20);
-    const resolvedBatchSize = Number.isFinite(batchSize) && batchSize > 0 ? Math.floor(batchSize) : 100;
-    const resolvedPauseMs = Number.isFinite(pauseMs) && pauseMs >= 0 ? pauseMs : 20;
-
-    for (let index = 0; index < stations.length; index += resolvedBatchSize) {
-      const batch = stations.slice(index, index + resolvedBatchSize);
-
-      for (const pdv of batch) {
-        try {
-          await this.importPdv(pdv);
-        } catch (error) {
-          console.error("Fuel import: failed to import station", {
-            stationId: pdv.id,
-            error
-          });
-        }
-      }
-
-      if (resolvedPauseMs > 0 && index + resolvedBatchSize < stations.length) {
-        await this.pause(resolvedPauseMs);
+    for (const pdv of stations) {
+      try {
+        await this.importPdv(pdv);
+      } catch (error) {
+        console.error("Fuel import: failed to import station", {
+          stationId: pdv.id,
+          error
+        });
       }
     }
   }
@@ -764,13 +751,6 @@ export default class ImportService {
     throw lastError;
   }
 
-  private async pause(ms: number): Promise<void> {
-    if (ms <= 0) {
-      return;
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   private isRetryable(error: unknown): boolean {
     if (error instanceof Error && error.message.includes("SocketTimeout")) {

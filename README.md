@@ -31,7 +31,11 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
 
 ### 2.2 Stratégie d'importation (Historisation / Time-Series)
 - **Script NPM initial** : `npm run import:data` initialise la BDD (Villes + Flux actuel).
+- **Import ponctuel (fichier)** : `npm run import:file -- ./data/mon_fichier.xml` importe un XML spécifique.
+  - Sans argument, le script télécharge le dernier flux puis l'importe.
+- **Concurrence SQLite** : activation de `WAL` + `busy_timeout` pour permettre les lectures pendant les écritures.
 - **Automatisation (CRON)** : Un CRON job tourne **toutes les heures** pour télécharger le fichier `instantane_rupture`.
+  - L'import est exécuté dans un **processus séparé** pour préserver la réactivité de l'API.
   - *Note sur la limite technique (Le "trou" d'historique)* : Étant donné que nous téléchargeons un état à intervalle régulier, si un prix change plusieurs fois dans la même heure, les variations intermédiaires seront perdues. C'est un compromis technique assumé face à l'absence de Webhook gouvernemental.
 - **Logique de mise à jour (Upsert & Idempotence)** :
   - L'import est **idempotent**. Une contrainte d'unicité `(station_id, fuel_type, recorded_at)` empêche la création de doublons si le CRON re-télécharge les mêmes données.
@@ -296,6 +300,8 @@ Checklist rapide apres import:
 - Le fichier `instantane_ruptures.zip` est téléchargé, extrait, puis importé depuis
   `data/PrixCarburants_instantane_ruptures.xml`.
 - L'ancien XML est supprimé pour ne conserver que le dernier.
+- Variables d'environnement utiles :
+  - `FUEL_IMPORT_INTERVAL_MS` (défaut: 3600000)
 
 ### 7.3 CI/CD et Tests
 - Tests unitaires (Jest) sur la logique métier complexe (ex: Bounding Box, Haversine, Parsing XML).
