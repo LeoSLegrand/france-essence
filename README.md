@@ -97,6 +97,14 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
 - Endpoint public d'aide à la recherche ville :
   - **GET /api/v1/cities/search?q=...&limit=8**
 
+### 3.7 Documentation Swagger (OpenAPI)
+- La documentation est exposee sur :
+  - **GET /docs** (Swagger UI)
+  - **GET /docs.json** (spec OpenAPI JSON)
+- Tous les endpoints actuellement implementes sont documentes (health, auth, cities, stations, statistics).
+- Les endpoints metier actuels restent publics.
+- Le schema `BearerAuth` est deja present dans OpenAPI pour preparer les futurs endpoints prives (vehicules, pleins, profil) qui exigeront un token JWT.
+
 ### 3.3 Endpoint Station (MVP)
 - **GET /api/v1/stations/:id**
   - Retourne les informations de la station + les prix courants.
