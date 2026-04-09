@@ -1,6 +1,17 @@
 import prisma from "../config/prisma";
 
+import { FuelType } from "../../prisma/generated/prisma/client";
+
 export default class StationService {
+  async stationExists(id: number) {
+    const station = await prisma.station.findUnique({
+      where: { id },
+      select: { id: true }
+    });
+
+    return Boolean(station);
+  }
+
   async getStationById(id: number) {
     return prisma.station.findUnique({
       where: { id },
@@ -9,6 +20,37 @@ export default class StationService {
         currentPrices: true
       }
     });
+  }
+
+  async getStationPriceHistory(params: {
+    stationId: number;
+    fuelType?: FuelType;
+    dateFrom: Date;
+    dateTo: Date;
+  }) {
+    const { stationId, fuelType, dateFrom, dateTo } = params;
+
+    const entries = await prisma.priceHistory.findMany({
+      where: {
+        stationId,
+        fuelType,
+        recordedAt: {
+          gte: dateFrom,
+          lte: dateTo
+        }
+      },
+      orderBy: {
+        recordedAt: "desc"
+      }
+    });
+
+    return entries.reduce<Record<FuelType, typeof entries>>((acc, entry) => {
+      if (!acc[entry.fuelType]) {
+        acc[entry.fuelType] = [];
+      }
+      acc[entry.fuelType].push(entry);
+      return acc;
+    }, {} as Record<FuelType, typeof entries>);
   }
 
   async getStationsByRadius(params: { lat: number; lng: number; radius: number; limit: number }) {

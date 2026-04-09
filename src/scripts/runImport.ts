@@ -8,7 +8,7 @@ async function run() {
   const service = new ImportService();
   const dataDir = path.join(__dirname, "../../data");
 
-  console.log("🚀 Lancement de l'import complet...");
+  console.log("Lancement de l'import complet...");
   
   // 1. Import des Villes
   await service.processCityData(path.join(dataDir, "communes-france-2025.csv"));

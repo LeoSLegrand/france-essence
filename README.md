@@ -80,6 +80,12 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
 - **GET /api/v1/stations/:id**
   - Retourne les informations de la station + les prix courants.
 
+### 3.4 Historique des prix station
+- **GET /api/v1/stations/:id/prices/history**
+  - Retourne l'historique des prix de la station, regroupé par type de carburant.
+  - Filtres supportés : `fuelType`, `dateFrom`, `dateTo`.
+  - Comportement par défaut sans filtre de date : dernière semaine.
+
 ---
 
 ## SECTION 4 : SUIVI DE CONSOMMATION (PRIVÉ)
