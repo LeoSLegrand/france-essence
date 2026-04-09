@@ -3,6 +3,37 @@ import prisma from "../config/prisma";
 import { FuelType } from "../../prisma/generated/prisma/client";
 
 export default class StationService {
+  async searchCities(query: string, limit = 10) {
+    const trimmed = query.trim();
+    const normalizedLimit = Math.min(Math.max(limit, 1), 20);
+    const startsWith = `${trimmed}%`;
+    const contains = `%${trimmed}%`;
+
+    const cities = await prisma.$queryRaw<Array<{
+      codeInsee: string;
+      name: string;
+      zipCode: string;
+      latitude: number;
+      longitude: number;
+    }>>`
+      SELECT
+        c.code_insee as codeInsee,
+        c.name as name,
+        c.zip_code as zipCode,
+        CAST(c.latitude AS REAL) as latitude,
+        CAST(c.longitude AS REAL) as longitude
+      FROM cities c
+      WHERE c.name LIKE ${contains} COLLATE NOCASE
+      ORDER BY
+        CASE WHEN c.name LIKE ${startsWith} COLLATE NOCASE THEN 0 ELSE 1 END,
+        LENGTH(c.name) ASC,
+        c.name ASC
+      LIMIT ${normalizedLimit}
+    `;
+
+    return cities;
+  }
+
   async stationExists(id: number) {
     const station = await prisma.station.findUnique({
       where: { id },

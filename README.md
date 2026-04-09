@@ -83,6 +83,20 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
   - Paramètres optionnels : `fuelType`, `departmentCode` (obligatoire si `level=department`).
   - Niveau départemental : filtrage via les 2 premiers caractères de `postalCode`.
 
+### 3.6 Interface web de test
+- Une interface React (dossier `web/`) permet de tester rapidement les appels API métier depuis le navigateur.
+- Cas d'usage couverts dans l'UI :
+  - Recherche stations par ville + rayon (autocomplete ville).
+  - Détail station depuis la liste de résultats (sans saisie d'ID).
+  - Statistiques nationales/départementales sur période.
+  - Création de compte (`signup`) et connexion (`login`).
+- Mode debug optionnel : les payloads JSON bruts sont cachés par défaut derrière un toggle "Mode test".
+- Endpoints auth utilisés :
+  - **POST /api/v1/auth/signup**
+  - **POST /api/v1/auth/login**
+- Endpoint public d'aide à la recherche ville :
+  - **GET /api/v1/cities/search?q=...&limit=8**
+
 ### 3.3 Endpoint Station (MVP)
 - **GET /api/v1/stations/:id**
   - Retourne les informations de la station + les prix courants.
@@ -328,3 +342,20 @@ Afin de ne pas surcharger le livrable initial, les éléments suivants sont docu
 2. **Filtrage par Services** : Normalisation de la colonne JSON `services` de la table `stations` en une table de liaison dédiée pour permettre des requêtes de type `?hasService=Lavage`.
 3. **Redis** : Remplacement du cache en mémoire pour permettre le load-balancing multi-instances.
 4. **gRPC / WebSockets** : Pour du streaming de prix en temps réel inter-microservices ou vers le client.
+
+---
+
+## SECTION 10 : LANCEMENT LOCAL (API + UI)
+
+1. Lancer l'API backend :
+  - `npm run dev`
+2. Lancer l'interface web dans un second terminal :
+  - `npm run web:dev`
+3. Ouvrir l'URL Vite affichée (par défaut `http://localhost:5173`).
+
+Optionnel : configurer l'URL API côté frontend via `web/.env`:
+- `VITE_API_BASE_URL=http://localhost:3000`
+
+Variables backend nécessaires dans `.env`:
+- `DATABASE_URL=file:./prisma/dev.db`
+- `JWT_SECRET=...`

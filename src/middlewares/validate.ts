@@ -7,7 +7,7 @@ export const validateParams = (schema: ZodSchema) =>
     if (!result.success) {
       return res.status(400).json({
         error: "validation_error",
-        message: "Invalid request parameters",
+        message: "Parametres de route invalides",
         details: result.error.flatten()
       });
     }
@@ -22,11 +22,26 @@ export const validateQuery = (schema: ZodSchema) =>
     if (!result.success) {
       return res.status(400).json({
         error: "validation_error",
-        message: "Invalid query parameters",
+        message: "Parametres de requete invalides",
         details: result.error.flatten()
       });
     }
 
     res.locals.query = result.data;
+    return next();
+  };
+
+export const validateBody = (schema: ZodSchema) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.body);
+    if (!result.success) {
+      return res.status(400).json({
+        error: "validation_error",
+        message: "Donnees du formulaire invalides",
+        details: result.error.flatten()
+      });
+    }
+
+    res.locals.body = result.data;
     return next();
   };

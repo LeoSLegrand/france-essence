@@ -18,3 +18,8 @@ export const stationPriceHistoryQuerySchema = z.object({
   dateFrom: z.coerce.date().optional(),
   dateTo: z.coerce.date().optional()
 });
+
+export const citySearchQuerySchema = z.object({
+  q: z.string().trim().min(2),
+  limit: z.coerce.number().int().positive().max(20).optional()
+});
