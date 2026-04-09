@@ -87,6 +87,8 @@ model PriceHistory {
   station Station @relation(fields: [stationId], references: [id])
 
   @@unique([stationId, fuelType, recordedAt])
+  @@index([recordedAt])
+  @@index([fuelType, recordedAt])
   @@map("price_history")
 }
 

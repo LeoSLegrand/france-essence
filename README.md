@@ -76,6 +76,13 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
 - Moyennes nationales/départementales des prix par type de carburant.
 - Détail d'une station (Adresse, services JSON, horaires) et son historique de prix récent.
 
+### 3.5 Statistiques publiques des prix
+- **GET /api/v1/statistics/prices**
+  - Retourne des moyennes de prix sur `price_history`, agrégées par carburant.
+  - Paramètres obligatoires : `level` (`national` ou `department`), `dateFrom`, `dateTo`.
+  - Paramètres optionnels : `fuelType`, `departmentCode` (obligatoire si `level=department`).
+  - Niveau départemental : filtrage via les 2 premiers caractères de `postalCode`.
+
 ### 3.3 Endpoint Station (MVP)
 - **GET /api/v1/stations/:id**
   - Retourne les informations de la station + les prix courants.
