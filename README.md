@@ -18,6 +18,17 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
 - **Inscription/Connexion** : E-mail + Mot de passe (hashé via bcrypt ou argon2).
 - **Sécurité** : Routes privées protégées par un middleware `isAuthenticated`.
 
+### 1.3 Compte de test par défaut
+- Commande : `npm run seed:test-user`
+- Effet : crée (ou met à jour) un utilisateur de test, un véhicule lié à ce compte, puis un historique de pleins.
+- Identifiants par défaut :
+  - Email : `test@france-essence.local`
+  - Mot de passe : `Test1234!`
+- Variables optionnelles :
+  - `SEED_TEST_EMAIL`
+  - `SEED_TEST_PASSWORD`
+  - `SEED_TEST_VEHICLE_NAME`
+
 ---
 
 ## SECTION 2 : GESTION DES DONNÉES OPEN DATA (CRON & IMPORT)
@@ -101,9 +112,18 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
 - La documentation est exposee sur :
   - **GET /docs** (Swagger UI)
   - **GET /docs.json** (spec OpenAPI JSON)
-- Tous les endpoints actuellement implementes sont documentes (health, auth, cities, stations, statistics).
-- Les endpoints metier actuels restent publics.
-- Le schema `BearerAuth` est deja present dans OpenAPI pour preparer les futurs endpoints prives (vehicules, pleins, profil) qui exigeront un token JWT.
+- Tous les endpoints actuellement implementes sont documentes :
+  - publics (`health`, `auth`, `cities`, `stations`, `statistics`)
+  - prives (`users`, `vehicles`, `fill-ups`)
+- Les endpoints prives sont marques avec `BearerAuth` dans Swagger (login requis).
+
+### 3.8 Flux de test JWT pret a l'emploi
+- Fichier de requetes HTTP : `docs/private-api.http`
+- Flux inclus :
+  - login -> recuperation token
+  - consultation `/api/v1/users/me` et `/api/v1/users/me/stats`
+  - CRUD de base vehicule
+  - ajout et listing des pleins
 
 ### 3.3 Endpoint Station (MVP)
 - **GET /api/v1/stations/:id**
@@ -130,14 +150,33 @@ Projet de création d'une API backend permettant le suivi des prix des carburant
 ## SECTION 5 : ARCHITECTURE ET DESIGN PATTERNS
 
 ### 5.1 Architecture MVC & Inversion de dépendance
+
+```text
+france-essence/
+├── src/                        # Backend API
+├── prisma/                     # Schéma + migrations + client généré
+├── data/                       # Fichiers Open Data (CSV/XML)
+├── web/                        # Frontend React/Vite
+├── dist/                       # Build compilé TypeScript
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
 ```text
 src/
-├── config/             # Variables d'environnement, init DB, CRON
-├── core/               # Interfaces, Exceptions personnalisées
-├── controllers/        # Routage Express, parsing Zod
-├── services/           # Logique métier pure (indépendante du framework HTTP)
-├── repositories/       # Couche d'accès aux données (ORM - Prisma/TypeORM)
-└── middlewares/        # Auth, Validation, Proxy Cache
+├── app.ts                      # Configuration Express (routes, CORS, Swagger)
+├── index.ts                    # Point d'entrée (startup serveur, DB, scheduler)
+├── config/                     # Prisma, variables, config Swagger
+├── controllers/                # Contrôleurs HTTP (req/res -> service)
+├── middlewares/                # Validation Zod, auth (à étendre)
+├── routes/                     # Déclaration des endpoints par domaine
+├── services/                   # Logique métier (stations, auth, import, stats)
+├── validators/                 # Schémas Zod (query, params, body)
+├── scripts/                    # Scripts d'import/exécution ponctuelle
+├── utils/                      # Helpers utilitaires
+├── repositories/               # Couche accès données (prévue/à étoffer)
+└── core/                       # Types métier, exceptions (prévu/à étoffer)
 ```
 
 ### 5.2 Proxy Applicatif (Cache en Mémoire)
