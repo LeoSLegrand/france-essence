@@ -378,8 +378,18 @@ Checklist rapide apres import:
   - `FUEL_IMPORT_INTERVAL_MS` (défaut: 3600000)
 
 ### 7.3 CI/CD et Tests
-- Tests unitaires (Jest) sur la logique métier complexe (ex: Bounding Box, Haversine, Parsing XML).
-- Pipeline CI basique (Linter, Type-check, exécution des tests).
+- Stack de test : **Vitest** + **Supertest**.
+- Scripts disponibles :
+  - `npm test` : execute toute la suite.
+  - `npm run test:unit` : controllers + middlewares avec dependances mockees.
+  - `npm run test:integration` : tests API bout-en-bout (auth, routes privees/publics, ownership).
+  - `npm run test:coverage` : rapport de couverture (`coverage/`).
+- Cibles couvertes en priorite :
+  - Authentification (`signup/login`, format JWT).
+  - Protection des routes privees (`401` sans token).
+  - Isolation des ressources utilisateur (`404` sur vehicule d'un autre user).
+  - Cycle vehicule et plein (create/read/update/delete + listing).
+- Pipeline CI recommande : type-check + tests unitaires + tests integration + couverture.
 
 ---
 
