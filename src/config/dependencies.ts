@@ -19,6 +19,14 @@ export type AuthServiceContract = {
 export type UserServiceContract = {
   getProfile: (userId: number) => Promise<unknown | null>;
   getStats: (userId: number, query: DateRangeQuery) => Promise<unknown>;
+  getFuelSpendSeries: (
+    userId: number,
+    query: {
+      dateFrom: Date;
+      dateTo: Date;
+      interval?: "HOUR" | "DAY" | "WEEK";
+    }
+  ) => Promise<unknown>;
 };
 
 export type VehicleServiceContract = {

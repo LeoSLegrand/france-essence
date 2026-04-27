@@ -7,7 +7,8 @@ describe("usersController", () => {
   it("returns 401 when auth user is missing", async () => {
     const userService = {
       getProfile: vi.fn(),
-      getStats: vi.fn()
+      getStats: vi.fn(),
+      getFuelSpendSeries: vi.fn()
     };
     const getAuthUserId = vi.fn().mockReturnValue(null);
     const { getMyProfile } = createUsersController({ userService, getAuthUserId });
@@ -24,7 +25,8 @@ describe("usersController", () => {
   it("returns 404 when profile does not exist", async () => {
     const userService = {
       getProfile: vi.fn().mockResolvedValue(null),
-      getStats: vi.fn()
+      getStats: vi.fn(),
+      getFuelSpendSeries: vi.fn()
     };
     const getAuthUserId = vi.fn().mockReturnValue(42);
     const { getMyProfile } = createUsersController({ userService, getAuthUserId });
@@ -47,7 +49,8 @@ describe("usersController", () => {
     };
     const userService = {
       getProfile: vi.fn(),
-      getStats: vi.fn().mockResolvedValue(statsPayload)
+      getStats: vi.fn().mockResolvedValue(statsPayload),
+      getFuelSpendSeries: vi.fn()
     };
     const getAuthUserId = vi.fn().mockReturnValue(7);
     const { getMyStats } = createUsersController({ userService, getAuthUserId });

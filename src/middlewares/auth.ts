@@ -1,18 +1,52 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-type AuthLocals = {
+export type AuthLocals = {
   userId: number;
   email?: string;
 };
 
-const resolveJwtSecretFromEnv = () => {
+export const resolveJwtSecretFromEnv = () => {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error("JWT_SECRET is not set");
   }
 
   return secret;
+};
+
+export const tryExtractAuthLocalsFromAuthorizationHeader = (
+  header: string | undefined,
+  jwtSecret: string
+): AuthLocals | null => {
+  if (!header) {
+    return null;
+  }
+
+  const [scheme, token] = header.split(" ");
+  if (scheme !== "Bearer" || !token) {
+    return null;
+  }
+
+  try {
+    const decoded = jwt.verify(token, jwtSecret);
+    if (typeof decoded === "string") {
+      return null;
+    }
+
+    const payload = decoded as JwtPayload;
+    const userId = Number(payload.sub);
+    if (!Number.isInteger(userId) || userId <= 0) {
+      return null;
+    }
+
+    return {
+      userId,
+      email: typeof payload.email === "string" ? payload.email : undefined
+    };
+  } catch {
+    return null;
+  }
 };
 
 export const createRequireAuth = (jwtSecret: string) =>
@@ -33,28 +67,24 @@ export const createRequireAuth = (jwtSecret: string) =>
       });
     }
 
+    const authLocals = tryExtractAuthLocalsFromAuthorizationHeader(header, jwtSecret);
+    if (!authLocals) {
+      return res.status(401).json({
+        error: "unauthorized",
+        message: "Invalid or expired token"
+      });
+    }
+
+    const payload = jwt.decode(token) as JwtPayload | null;
+    const payloadUserId = Number(payload?.sub);
+    if (!Number.isInteger(payloadUserId) || payloadUserId <= 0) {
+      return res.status(401).json({
+        error: "unauthorized",
+        message: "Invalid token payload"
+      });
+    }
+
     try {
-      const decoded = jwt.verify(token, jwtSecret);
-      if (typeof decoded === "string") {
-        return res.status(401).json({
-          error: "unauthorized",
-          message: "Invalid token payload"
-        });
-      }
-
-      const payload = decoded as JwtPayload;
-      const userId = Number(payload.sub);
-      if (!Number.isInteger(userId) || userId <= 0) {
-        return res.status(401).json({
-          error: "unauthorized",
-          message: "Invalid token payload"
-        });
-      }
-
-      const authLocals: AuthLocals = {
-        userId,
-        email: typeof payload.email === "string" ? payload.email : undefined
-      };
       res.locals.auth = authLocals;
 
       return next();

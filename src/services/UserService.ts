@@ -7,6 +7,8 @@ type StatsQuery = {
   dateTo?: Date;
 };
 
+type SeriesInterval = "HOUR" | "DAY" | "WEEK";
+
 export default class UserService {
   async getProfile(userId: number) {
     const user = await prisma.user.findUnique({
@@ -155,7 +157,106 @@ export default class UserService {
     };
   }
 
+  async getFuelSpendSeries(
+    userId: number,
+    query: {
+      dateFrom: Date;
+      dateTo: Date;
+      interval?: SeriesInterval;
+    }
+  ) {
+    const interval = query.interval ?? "DAY";
+
+    const fillUps = await prisma.fillUp.findMany({
+      where: {
+        vehicle: {
+          userId
+        },
+        date: {
+          gte: query.dateFrom,
+          lte: query.dateTo
+        }
+      },
+      orderBy: {
+        date: "asc"
+      },
+      select: {
+        date: true,
+        fuelType: true,
+        liters: true,
+        totalPrice: true
+      }
+    });
+
+    const series = new Map<string, {
+      timestamp: Date;
+      fuelType: FuelType;
+      totalSpend: number;
+      totalLiters: number;
+      fillUps: number;
+    }>();
+
+    for (const fillUp of fillUps) {
+      const timestamp = this.toIntervalStart(fillUp.date, interval);
+      const key = `${timestamp.toISOString()}|${fillUp.fuelType}`;
+
+      const current = series.get(key) ?? {
+        timestamp,
+        fuelType: fillUp.fuelType,
+        totalSpend: 0,
+        totalLiters: 0,
+        fillUps: 0
+      };
+
+      current.totalSpend += Number(fillUp.totalPrice);
+      current.totalLiters += Number(fillUp.liters);
+      current.fillUps += 1;
+      series.set(key, current);
+    }
+
+    return [...series.values()]
+      .sort((a, b) => {
+        const dateDiff = a.timestamp.getTime() - b.timestamp.getTime();
+        if (dateDiff !== 0) {
+          return dateDiff;
+        }
+
+        return a.fuelType.localeCompare(b.fuelType);
+      })
+      .map((entry) => ({
+        timestamp: entry.timestamp,
+        fuelType: entry.fuelType,
+        totalSpend: this.round(entry.totalSpend, 2),
+        totalLiters: this.round(entry.totalLiters),
+        fillUps: entry.fillUps,
+        averagePricePerLiter:
+          entry.totalLiters > 0
+            ? this.round(entry.totalSpend / entry.totalLiters)
+            : null
+      }));
+  }
+
   private round(value: number, decimals = 3) {
     return Number(value.toFixed(decimals));
+  }
+
+  private toIntervalStart(date: Date, interval: SeriesInterval) {
+    const normalized = new Date(date);
+
+    if (interval === "HOUR") {
+      normalized.setUTCMinutes(0, 0, 0);
+      return normalized;
+    }
+
+    if (interval === "DAY") {
+      normalized.setUTCHours(0, 0, 0, 0);
+      return normalized;
+    }
+
+    normalized.setUTCHours(0, 0, 0, 0);
+    const day = normalized.getUTCDay();
+    const diffToMonday = (day + 6) % 7;
+    normalized.setUTCDate(normalized.getUTCDate() - diffToMonday);
+    return normalized;
   }
 }

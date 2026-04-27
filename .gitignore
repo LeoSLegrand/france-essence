@@ -145,3 +145,6 @@ vite.config.ts.timestamp-*
 
 # Dossier pour les données temporaires et imports
 data/
+
+# Database de développement Prisma
+prisma/dev.db
