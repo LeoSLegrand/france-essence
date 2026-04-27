@@ -1,10 +1,7 @@
 import { Router } from "express";
 
-import {
-	getStationById,
-	getStationPriceHistory,
-	getStationsByRadius
-} from "../controllers/stationsController";
+import { AppDependencies, appDependencies } from "../config/dependencies";
+import { createStationsController } from "../controllers/stationsController";
 import { validateParams, validateQuery } from "../middlewares/validate";
 import {
 	stationIdParamSchema,
@@ -12,15 +9,26 @@ import {
 	stationRadiusQuerySchema
 } from "../validators/stations";
 
-const router = Router();
+type StationsRouteDependencies = Pick<AppDependencies, "stationService">;
 
-router.get("/:id", validateParams(stationIdParamSchema), getStationById);
-router.get(
-	"/:id/prices/history",
-	validateParams(stationIdParamSchema),
-	validateQuery(stationPriceHistoryQuerySchema),
-	getStationPriceHistory
-);
-router.get("/", validateQuery(stationRadiusQuerySchema), getStationsByRadius);
+export const createStationsRouter = (dependencies: StationsRouteDependencies) => {
+	const router = Router();
+	const {
+		getStationById,
+		getStationPriceHistory,
+		getStationsByRadius
+	} = createStationsController({ stationService: dependencies.stationService });
 
-export default router;
+	router.get("/:id", validateParams(stationIdParamSchema), getStationById);
+	router.get(
+		"/:id/prices/history",
+		validateParams(stationIdParamSchema),
+		validateQuery(stationPriceHistoryQuerySchema),
+		getStationPriceHistory
+	);
+	router.get("/", validateQuery(stationRadiusQuerySchema), getStationsByRadius);
+
+	return router;
+};
+
+export default createStationsRouter({ stationService: appDependencies.stationService });

@@ -1,11 +1,19 @@
 import { Router } from "express";
 
-import { searchCities } from "../controllers/citiesController";
+import { AppDependencies, appDependencies } from "../config/dependencies";
+import { createCitiesController } from "../controllers/citiesController";
 import { validateQuery } from "../middlewares/validate";
 import { citySearchQuerySchema } from "../validators/stations";
 
-const router = Router();
+type CitiesRouteDependencies = Pick<AppDependencies, "stationService">;
 
-router.get("/search", validateQuery(citySearchQuerySchema), searchCities);
+export const createCitiesRouter = (dependencies: CitiesRouteDependencies) => {
+	const router = Router();
+	const { searchCities } = createCitiesController({ stationService: dependencies.stationService });
 
-export default router;
+	router.get("/search", validateQuery(citySearchQuerySchema), searchCities);
+
+	return router;
+};
+
+export default createCitiesRouter({ stationService: appDependencies.stationService });

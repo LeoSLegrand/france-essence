@@ -1,11 +1,21 @@
 import { Router } from "express";
 
-import { getPublicPriceStatistics } from "../controllers/statisticsController";
+import { AppDependencies, appDependencies } from "../config/dependencies";
+import { createStatisticsController } from "../controllers/statisticsController";
 import { validateQuery } from "../middlewares/validate";
 import { publicPriceStatisticsQuerySchema } from "../validators/statistics";
 
-const router = Router();
+type StatisticsRouteDependencies = Pick<AppDependencies, "statisticsService">;
 
-router.get("/prices", validateQuery(publicPriceStatisticsQuerySchema), getPublicPriceStatistics);
+export const createStatisticsRouter = (dependencies: StatisticsRouteDependencies) => {
+	const router = Router();
+	const { getPublicPriceStatistics } = createStatisticsController({
+		statisticsService: dependencies.statisticsService
+	});
 
-export default router;
+	router.get("/prices", validateQuery(publicPriceStatisticsQuerySchema), getPublicPriceStatistics);
+
+	return router;
+};
+
+export default createStatisticsRouter({ statisticsService: appDependencies.statisticsService });

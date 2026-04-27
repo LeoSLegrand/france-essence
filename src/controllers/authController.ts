@@ -1,33 +1,46 @@
 import { Request, Response } from "express";
 
+import { AppDependencies } from "../config/dependencies";
 import AuthService from "../services/AuthService";
 
-const authService = new AuthService();
+type AuthControllerDependencies = Pick<AppDependencies, "authService">;
 
-export const signup = async (req: Request, res: Response) => {
-  const body = (res.locals.body ?? req.body) as { email: string; password: string };
+export const createAuthController = ({ authService }: AuthControllerDependencies) => {
+  const signup = async (req: Request, res: Response) => {
+    const body = (res.locals.body ?? req.body) as { email: string; password: string };
 
-  const result = await authService.signup(body.email, body.password);
-  if (!result) {
-    return res.status(409).json({
-      error: "conflict",
-      message: "Email already in use"
-    });
-  }
+    const result = await authService.signup(body.email, body.password);
+    if (!result) {
+      return res.status(409).json({
+        error: "conflict",
+        message: "Email already in use"
+      });
+    }
 
-  return res.status(201).json({ data: result });
+    return res.status(201).json({ data: result });
+  };
+
+  const login = async (req: Request, res: Response) => {
+    const body = (res.locals.body ?? req.body) as { email: string; password: string };
+
+    const result = await authService.login(body.email, body.password);
+    if (!result) {
+      return res.status(401).json({
+        error: "unauthorized",
+        message: "Invalid email or password"
+      });
+    }
+
+    return res.status(200).json({ data: result });
+  };
+
+  return {
+    signup,
+    login
+  };
 };
 
-export const login = async (req: Request, res: Response) => {
-  const body = (res.locals.body ?? req.body) as { email: string; password: string };
+const defaultController = createAuthController({ authService: new AuthService() });
 
-  const result = await authService.login(body.email, body.password);
-  if (!result) {
-    return res.status(401).json({
-      error: "unauthorized",
-      message: "Invalid email or password"
-    });
-  }
-
-  return res.status(200).json({ data: result });
-};
+export const signup = defaultController.signup;
+export const login = defaultController.login;

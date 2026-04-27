@@ -1,17 +1,9 @@
 import { Router } from "express";
 
-import {
-  createVehicleFillUp,
-  getVehicleFillUps
-} from "../controllers/fillUpsController";
-import {
-  createVehicle,
-  deleteVehicle,
-  getMyVehicles,
-  getVehicleById,
-  updateVehicle
-} from "../controllers/vehiclesController";
-import { requireAuth } from "../middlewares/auth";
+import { AppDependencies, appDependencies } from "../config/dependencies";
+import { createFillUpsController } from "../controllers/fillUpsController";
+import { createVehiclesController } from "../controllers/vehiclesController";
+import { getAuthUserId, requireAuth } from "../middlewares/auth";
 import { validateBody, validateParams, validateQuery } from "../middlewares/validate";
 import { createFillUpBodySchema, fillUpsListQuerySchema } from "../validators/fillUps";
 import {
@@ -21,28 +13,50 @@ import {
   vehicleIdParamSchema
 } from "../validators/vehicles";
 
-const router = Router();
+type VehiclesRouteDependencies = Pick<AppDependencies, "vehicleService" | "fillUpService">;
 
-router.use(requireAuth);
+export const createVehiclesRouter = (dependencies: VehiclesRouteDependencies) => {
+  const router = Router();
+  const {
+    createVehicle,
+    deleteVehicle,
+    getMyVehicles,
+    getVehicleById,
+    updateVehicle
+  } = createVehiclesController({
+    vehicleService: dependencies.vehicleService,
+    getAuthUserId
+  });
+  const { createVehicleFillUp, getVehicleFillUps } = createFillUpsController({
+    fillUpService: dependencies.fillUpService,
+    getAuthUserId
+  });
 
-router.get("/", getMyVehicles);
-router.post("/", validateBody(createVehicleBodySchema), createVehicle);
+  router.use(requireAuth);
 
-router.get(
-  "/:vehicleId/fill-ups",
-  validateParams(vehicleFillUpsParamsSchema),
-  validateQuery(fillUpsListQuerySchema),
-  getVehicleFillUps
-);
-router.post(
-  "/:vehicleId/fill-ups",
-  validateParams(vehicleFillUpsParamsSchema),
-  validateBody(createFillUpBodySchema),
-  createVehicleFillUp
-);
+  router.get("/", getMyVehicles);
+  router.post("/", validateBody(createVehicleBodySchema), createVehicle);
 
-router.get("/:id", validateParams(vehicleIdParamSchema), getVehicleById);
-router.patch("/:id", validateParams(vehicleIdParamSchema), validateBody(updateVehicleBodySchema), updateVehicle);
-router.delete("/:id", validateParams(vehicleIdParamSchema), deleteVehicle);
+  router.get(
+    "/:vehicleId/fill-ups",
+    validateParams(vehicleFillUpsParamsSchema),
+    validateQuery(fillUpsListQuerySchema),
+    getVehicleFillUps
+  );
+  router.post(
+    "/:vehicleId/fill-ups",
+    validateParams(vehicleFillUpsParamsSchema),
+    validateBody(createFillUpBodySchema),
+    createVehicleFillUp
+  );
 
-export default router;
+  router.get("/:id", validateParams(vehicleIdParamSchema), getVehicleById);
+  router.patch("/:id", validateParams(vehicleIdParamSchema), validateBody(updateVehicleBodySchema), updateVehicle);
+  router.delete("/:id", validateParams(vehicleIdParamSchema), deleteVehicle);
+
+  return router;
+};
+export default createVehiclesRouter({
+  vehicleService: appDependencies.vehicleService,
+  fillUpService: appDependencies.fillUpService
+});

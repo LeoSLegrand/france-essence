@@ -1,15 +1,26 @@
 import { Router } from "express";
 
-import { getMyProfile, getMyStats } from "../controllers/usersController";
-import { requireAuth } from "../middlewares/auth";
+import { AppDependencies, appDependencies } from "../config/dependencies";
+import { createUsersController } from "../controllers/usersController";
+import { getAuthUserId, requireAuth } from "../middlewares/auth";
 import { validateQuery } from "../middlewares/validate";
 import { userStatsQuerySchema } from "../validators/users";
 
-const router = Router();
+type UsersRouteDependencies = Pick<AppDependencies, "userService">;
 
-router.use(requireAuth);
+export const createUsersRouter = (dependencies: UsersRouteDependencies) => {
+	const router = Router();
+	const { getMyProfile, getMyStats } = createUsersController({
+		userService: dependencies.userService,
+		getAuthUserId
+	});
 
-router.get("/me", getMyProfile);
-router.get("/me/stats", validateQuery(userStatsQuerySchema), getMyStats);
+	router.use(requireAuth);
 
-export default router;
+	router.get("/me", getMyProfile);
+	router.get("/me/stats", validateQuery(userStatsQuerySchema), getMyStats);
+
+	return router;
+};
+
+export default createUsersRouter({ userService: appDependencies.userService });
