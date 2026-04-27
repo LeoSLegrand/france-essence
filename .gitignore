@@ -148,3 +148,4 @@ data/
 
 # Database de développement Prisma
 prisma/dev.db
+prisma/dev.db-*
