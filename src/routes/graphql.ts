@@ -14,6 +14,34 @@ export const createGraphQLRouter = (dependencies: GraphQLRouteDependencies) => {
 
   router.use(express.json());
 
+  router.get("/", (_req, res) => {
+    return res.status(200).json({
+      message: "GraphQL endpoint is available. Send POST requests to /graphql with a JSON body containing query and optional variables.",
+      examples: {
+        publicQuery: {
+          query:
+            "query($stationId:Int!,$dateFrom:String!,$dateTo:String!){ stationPriceSeries(stationId:$stationId,dateFrom:$dateFrom,dateTo:$dateTo,interval:DAY){ timestamp fuelType price samples } }",
+          variables: {
+            stationId: 1800000000,
+            dateFrom: "2026-04-01T00:00:00.000Z",
+            dateTo: "2026-04-02T00:00:00.000Z"
+          }
+        },
+        privateQuery: {
+          query:
+            "query($dateFrom:String!,$dateTo:String!){ userFuelSpendSeries(dateFrom:$dateFrom,dateTo:$dateTo,interval:DAY){ timestamp fuelType totalSpend totalLiters fillUps averagePricePerLiter } }",
+          headers: {
+            Authorization: "Bearer <jwt>"
+          },
+          variables: {
+            dateFrom: "2026-04-01T00:00:00.000Z",
+            dateTo: "2026-04-30T23:59:59.999Z"
+          }
+        }
+      }
+    });
+  });
+
   router.post("/", async (req, res) => {
     const { query, variables, operationName } = req.body ?? {};
     if (typeof query !== "string") {
