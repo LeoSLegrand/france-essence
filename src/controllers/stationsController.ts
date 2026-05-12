@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { FuelType } from "../../prisma/generated/prisma/client";
+import { FuelType } from "@prisma/client";
 
 import { AppDependencies } from "../config/dependencies";
 import StationService from "../services/StationService";

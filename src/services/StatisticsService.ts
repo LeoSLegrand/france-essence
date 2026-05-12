@@ -1,4 +1,4 @@
-import { Prisma, FuelType } from "../../prisma/generated/prisma/client";
+import { Prisma, FuelType } from "@prisma/client";
 import prisma from "../config/prisma";
 
 type StatisticsLevel = "national" | "department";

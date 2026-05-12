@@ -1,4 +1,4 @@
-import { FuelType } from "../../prisma/generated/prisma/client";
+import { FuelType } from "@prisma/client";
 import AuthService from "../services/AuthService";
 import FillUpService from "../services/FillUpService";
 import StationService from "../services/StationService";

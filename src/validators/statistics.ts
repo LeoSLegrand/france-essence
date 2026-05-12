@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { FuelType } from "../../prisma/generated/prisma/client";
+import { FuelType } from "@prisma/client";
 
 const levelEnum = z.enum(["national", "department"]);
 

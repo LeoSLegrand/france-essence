@@ -2,7 +2,7 @@ import "dotenv/config";
 
 import bcrypt from "bcrypt";
 
-import { FuelType } from "../../prisma/generated/prisma/client";
+import { FuelType } from "@prisma/client";
 import prisma from "../config/prisma";
 
 type SeedFillUp = {

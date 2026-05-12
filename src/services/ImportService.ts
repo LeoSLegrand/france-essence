@@ -6,7 +6,7 @@ import csvParser from "csv-parser";
 import { XMLParser } from "fast-xml-parser";
 import iconv from "iconv-lite";
 
-import { Prisma, FuelType } from "../../prisma/generated/prisma/client";
+import { Prisma, FuelType } from "@prisma/client";
 import prisma, { ensureSqlitePragmas } from "../config/prisma";
 
 type RawPdv = {

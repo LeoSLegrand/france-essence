@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  api:
+    build: .
+    image: france-essence-api
+    container_name: france_essence_api
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    ports:
+      - "3000:3000"
+    volumes:
+      - france-essence-data:/app/prisma
+    # Future DB service can be added here and referenced with depends_on.
+
+  # db:
+  #   image: <future-db-image>
+  #   container_name: france_essence_db
+  #   restart: unless-stopped
+  #   environment:
+  #     # Example for a future SQL DB image
+  #     DB_NAME: ${DB_NAME}
+  #     DB_USER: ${DB_USER}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #   ports:
+  #     - "${DB_PORT}:5432"
+  #   volumes:
+  #     - db_data:/var/lib/db
+
+volumes:
+  france-essence-data:
+  # db_data:

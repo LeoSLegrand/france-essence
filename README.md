@@ -50,6 +50,42 @@ Une API Node.js qui expose des endpoints REST et GraphQL pour suivre les prix de
    npm run dev
    ```
 
+## 🐳 Docker (API)
+
+1. Construire l image:
+   ```bash
+   docker build -t france-essence-api .
+   ```
+
+2. Creer un fichier d environnement local (non versionne):
+   ```bash
+   cp .env.docker.example .env.docker
+   ```
+
+3. Initialiser la base (premier lancement):
+   ```bash
+   docker run --rm --env-file .env.docker -v france-essence-data:/app/prisma france-essence-api npx prisma migrate deploy
+   ```
+
+4. Lancer l API:
+   ```bash
+   docker run --rm -p 3000:3000 --env-file .env.docker -v france-essence-data:/app/prisma france-essence-api
+   ```
+
+## 🐳 Docker Compose (API + futur DB)
+
+1. Creer le fichier d environnement local:
+   ```bash
+   cp .env.docker.example .env.docker
+   ```
+
+2. Construire et lancer:
+   ```bash
+   docker compose build
+   docker compose run --rm api npx prisma migrate deploy
+   docker compose up
+   ```
+
 ## 📖 Documentation detaillee
 
 Pour une vue complete de l'architecture et des choix techniques, voir [Projet Overview](./Projet%20Overview.md).

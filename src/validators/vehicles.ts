@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { FuelType } from "../../prisma/generated/prisma/client";
+import { FuelType } from "@prisma/client";
 
 export const vehicleIdParamSchema = z.object({
   id: z.coerce.number().int().positive()

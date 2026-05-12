@@ -1,6 +1,6 @@
 import prisma from "../config/prisma";
 
-import { FuelType } from "../../prisma/generated/prisma/client";
+import { FuelType } from "@prisma/client";
 
 export default class StationService {
   async searchCities(query: string, limit = 10) {

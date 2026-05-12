@@ -1,4 +1,4 @@
-import { FuelType } from "../../prisma/generated/prisma/client";
+import { FuelType } from "@prisma/client";
 import { AppDependencies } from "../config/dependencies";
 import { GraphQLContext } from "./context";
 
