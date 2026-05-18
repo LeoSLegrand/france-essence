@@ -7,7 +7,7 @@ import { XMLParser } from "fast-xml-parser";
 import iconv from "iconv-lite";
 
 import { Prisma, FuelType } from "@prisma/client";
-import prisma, { ensureSqlitePragmas } from "../config/prisma";
+import prisma from "../config/prisma";
 
 type RawPdv = {
   id?: string;
@@ -49,7 +49,6 @@ export default class ImportService {
   private cityLocationIndex = new Map<string, { lat: number; lng: number; names: Set<string> }>();
 
   async processFuelData(xmlZipPath: string): Promise<void> {
-    await ensureSqlitePragmas();
     await this.preloadCityIndexes();
 
     const xmlContent = this.readXmlFromZip(xmlZipPath);
@@ -88,7 +87,6 @@ export default class ImportService {
   }
 
   async processCityData(csvPath: string): Promise<void> {
-    await ensureSqlitePragmas();
     if (!fs.existsSync(csvPath)) {
       console.warn("City import: CSV not found", { csvPath });
       return;
@@ -759,7 +757,7 @@ export default class ImportService {
 
     return (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "SQLITE_ERROR"
+      error.code === "P2034"
     );
   }
 

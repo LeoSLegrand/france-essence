@@ -1,4 +1,4 @@
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
 declare global {
@@ -11,22 +11,14 @@ if (!databaseUrl) {
   throw new Error("DATABASE_URL is not set");
 }
 
-const adapter = new PrismaBetterSqlite3({ url: databaseUrl });
-const prisma = globalThis.prisma ?? new PrismaClient({ adapter });
-let pragmasApplied = false;
+const prisma = globalThis.prisma ?? new PrismaClient({
+  adapter: new PrismaPg({
+    connectionString: databaseUrl
+  })
+});
 
 if (process.env.NODE_ENV !== "production") {
   globalThis.prisma = prisma;
 }
-
-export const ensureSqlitePragmas = async () => {
-  if (pragmasApplied) {
-    return;
-  }
-
-  await prisma.$executeRawUnsafe("PRAGMA journal_mode=WAL;");
-  await prisma.$executeRawUnsafe("PRAGMA busy_timeout = 5000;");
-  pragmasApplied = true;
-};
 
 export default prisma;

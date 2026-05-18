@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   api:
     build: .
@@ -8,26 +6,26 @@ services:
     restart: unless-stopped
     env_file:
       - .env.docker
-    ports:
+    ports:   
       - "3000:3000"
-    volumes:
-      - france-essence-data:/app/prisma
-    # Future DB service can be added here and referenced with depends_on.
+    depends_on:
+      - db
 
-  # db:
-  #   image: <future-db-image>
-  #   container_name: france_essence_db
-  #   restart: unless-stopped
-  #   environment:
-  #     # Example for a future SQL DB image
-  #     DB_NAME: ${DB_NAME}
-  #     DB_USER: ${DB_USER}
-  #     DB_PASSWORD: ${DB_PASSWORD}
-  #   ports:
-  #     - "${DB_PORT}:5432"
-  #   volumes:
-  #     - db_data:/var/lib/db
+  db:
+    image: postgres:16-alpine
+    container_name: france_essence_db
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - france-essence-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
-  france-essence-data:
-  # db_data:
+  france-essence-db:

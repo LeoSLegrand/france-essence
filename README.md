@@ -15,7 +15,7 @@ Une API Node.js qui expose des endpoints REST et GraphQL pour suivre les prix de
 
 -   **Runtime:** Node.js
 -   **Framework:** Express.js
--   **Base de donnees:** SQLite (via Prisma)
+-   **Base de donnees:** PostgreSQL (via Prisma)
 -   **API:** REST & GraphQL
 -   **Tests:** Vitest
 
@@ -25,6 +25,7 @@ Une API Node.js qui expose des endpoints REST et GraphQL pour suivre les prix de
 
 -   Node.js (v18 ou plus)
 -   npm
+-   Docker (pour PostgreSQL local)
 
 ### Installation
 
@@ -34,56 +35,50 @@ Une API Node.js qui expose des endpoints REST et GraphQL pour suivre les prix de
    cd france-essence
    ```
 
-2. Installer les dependances:
+2. Creer le fichier d environnement local:
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Demarrer PostgreSQL (local via Docker):
+   ```bash
+   docker compose up -d db
+   ```
+
+4. Installer les dependances:
    ```bash
    npm install
    ```
 
-3. Generer le client Prisma et initialiser la base locale:
+5. Generer le client Prisma et initialiser la base locale:
    ```bash
    npx prisma generate
    npx prisma migrate dev
    ```
 
-4. Lancer le serveur de developpement:
+6. Lancer le serveur de developpement:
    ```bash
    npm run dev
    ```
 
-## 🐳 Docker (API)
+## 🐳 Docker Compose (API + DB)
 
-1. Construire l image:
-   ```bash
-   docker build -t france-essence-api .
-   ```
-
-2. Creer un fichier d environnement local (non versionne):
-   ```bash
-   cp .env.docker.example .env.docker
-   ```
-
-3. Initialiser la base (premier lancement):
-   ```bash
-   docker run --rm --env-file .env.docker -v france-essence-data:/app/prisma france-essence-api npx prisma migrate deploy
-   ```
-
-4. Lancer l API:
-   ```bash
-   docker run --rm -p 3000:3000 --env-file .env.docker -v france-essence-data:/app/prisma france-essence-api
-   ```
-
-## 🐳 Docker Compose (API + futur DB)
+Le fichier [docker-compose.yml](docker-compose.yml) orchestre l API et PostgreSQL.
 
 1. Creer le fichier d environnement local:
    ```bash
    cp .env.docker.example .env.docker
    ```
 
-2. Construire et lancer:
+2. Construire et initialiser la base:
    ```bash
-   docker compose build
-   docker compose run --rm api npx prisma migrate deploy
-   docker compose up
+   docker compose --env-file .env.docker build
+   docker compose --env-file .env.docker run --rm api npx prisma migrate deploy
+   ```
+
+3. Lancer l ensemble:
+   ```bash
+   docker compose --env-file .env.docker up
    ```
 
 ## 📖 Documentation detaillee

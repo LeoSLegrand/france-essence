@@ -1,6 +1,10 @@
 FROM node:20-slim AS build
 WORKDIR /app
 
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends openssl ca-certificates \
+	&& rm -rf /var/lib/apt/lists/*
+
 COPY package*.json ./
 RUN npm install --no-audit --no-fund
 
@@ -16,6 +20,7 @@ COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/prisma.config.ts ./
 
 EXPOSE 3000
 CMD ["node", "dist/src/index.js"]

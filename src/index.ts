@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import app from "./app";
-import prisma, { ensureSqlitePragmas } from "./config/prisma";
+import prisma from "./config/prisma";
 import { startFuelImportScheduler } from "./services/FuelImportScheduler";
 
 const port = Number(process.env.PORT) || 3000;
@@ -13,8 +13,6 @@ const fuelImportIntervalMs = Number.isFinite(configuredInterval) && configuredIn
 
 const start = async () => {
   await prisma.$connect();
-  await ensureSqlitePragmas();
-
   app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
   });
