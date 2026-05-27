@@ -82,6 +82,24 @@ Pour lancer uniquement PostgreSQL en Docker et executer l API en local:
 Le fichier [docker-compose.yml](docker-compose.yml) orchestre l API et PostgreSQL.
 Le demarrage se fait directement avec `.env`.
 
+## 🧰 CI/CD Setup
+
+Pour preparer Jenkins en local, run le script :
+
+**Linux**
+```bash
+./jenkins-setup.sh
+```
+
+**Windows**
+Pour preparer Jenkins en local, run le script :
+```powershell
+./jenkins-setup.sh
+```
+
+Ensuite, configurer manuellement le job Jenkins pour pointer vers ce depot
+et utiliser le `Jenkinsfile` a la racine.
+
 ## 📖 Documentation detaillee
 
 Pour une vue complete de l'architecture et des choix techniques, voir [Projet Overview](./Projet%20Overview.md).
