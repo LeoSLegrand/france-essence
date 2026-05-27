@@ -40,23 +40,39 @@ Une API Node.js qui expose des endpoints REST et GraphQL pour suivre les prix de
    cp .env.example .env
    ```
 
-3. Demarrer PostgreSQL (local via Docker):
+3. Lancer l'ensemble (API + DB) via Docker Compose:
+   ```bash
+   docker compose up -d --build
+   ```
+
+Le conteneur API applique les migrations (`prisma migrate deploy`) au demarrage.
+
+### Developpement local (API hors Docker)
+
+Pour lancer uniquement PostgreSQL en Docker et executer l API en local:
+
+1. Demarrer PostgreSQL:
    ```bash
    docker compose up -d db
    ```
 
-4. Installer les dependances:
+2. Mettre a jour `DATABASE_URL` dans `.env` pour pointer sur localhost:
+   ```bash
+   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/france_essence?schema=public
+   ```
+
+3. Installer les dependances:
    ```bash
    npm install
    ```
 
-5. Generer le client Prisma et initialiser la base locale:
+4. Generer le client Prisma et initialiser la base locale:
    ```bash
    npx prisma generate
    npx prisma migrate dev
    ```
 
-6. Lancer le serveur de developpement:
+5. Lancer le serveur de developpement:
    ```bash
    npm run dev
    ```
@@ -64,22 +80,7 @@ Une API Node.js qui expose des endpoints REST et GraphQL pour suivre les prix de
 ## 🐳 Docker Compose (API + DB)
 
 Le fichier [docker-compose.yml](docker-compose.yml) orchestre l API et PostgreSQL.
-
-1. Creer le fichier d environnement local:
-   ```bash
-   cp .env.docker.example .env.docker
-   ```
-
-2. Construire et initialiser la base:
-   ```bash
-   docker compose --env-file .env.docker build
-   docker compose --env-file .env.docker run --rm api npx prisma migrate deploy
-   ```
-
-3. Lancer l ensemble:
-   ```bash
-   docker compose --env-file .env.docker up
-   ```
+Le demarrage se fait directement avec `.env`.
 
 ## 📖 Documentation detaillee
 
