@@ -1,11 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'node:20-bullseye'
-      args '-v /var/run/docker.sock:/var/run/docker.sock'
-      reuseNode true
-    }
-  }
+  agent any
 
   triggers { pollSCM('* * * * *') }
 
@@ -23,7 +17,6 @@ pipeline {
 
     stage('Install') {
       steps {
-        sh 'apt-get update && apt-get install -y git docker.io'
         sh 'npm install'
       }
     }
