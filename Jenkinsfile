@@ -58,7 +58,7 @@ pipeline {
         withCredentials([string(credentialsId: 'ghcr-token', variable: 'GH_TOKEN')]) {
           script {
             def gitSha = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-            def tagName = "ci-${gitSha}"
+            def tagName = "jenkins-${env.BUILD_NUMBER}-${gitSha}"
             sh "git tag -a ${tagName} -m \"CI build ${gitSha}\""
             sh "git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/LeoSLegrand/france-essence.git"
             sh "git push origin ${tagName}"
