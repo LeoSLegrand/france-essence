@@ -33,5 +33,6 @@ done
 docker exec -u 0 jenkins bash -lc "apt-get update && apt-get install -y curl ca-certificates gnupg"
 docker exec -u 0 jenkins bash -lc "curl -fsSL https://deb.nodesource.com/setup_20.x | bash -"
 docker exec -u 0 jenkins bash -lc "apt-get install -y nodejs docker.io"
+docker exec -u 0 jenkins bash -lc "chmod 666 /var/run/docker.sock"
 
 echo "Jenkins is ready at http://localhost:8080"

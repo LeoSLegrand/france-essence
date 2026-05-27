@@ -46,7 +46,7 @@ pipeline {
 
     stage('Push to GHCR') {
       steps {
-        withCredentials([string(credentialsId: 'github-token', variable: 'GH_TOKEN')]) {
+        withCredentials([string(credentialsId: 'ghcr-token', variable: 'GH_TOKEN')]) {
           sh 'echo "$GH_TOKEN" | docker login ghcr.io -u leoslegrand --password-stdin'
           sh 'docker push "$IMAGE_TAG"'
         }
@@ -55,7 +55,7 @@ pipeline {
 
     stage('Tag on GitHub') {
       steps {
-        withCredentials([string(credentialsId: 'github-token', variable: 'GH_TOKEN')]) {
+        withCredentials([string(credentialsId: 'ghcr-token', variable: 'GH_TOKEN')]) {
           script {
             def gitSha = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
             def tagName = "ci-${gitSha}"
