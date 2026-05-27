@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 
 import { AppDependencies } from "../config/dependencies";
-import StationService from "../services/StationService";
 
 type CitiesControllerDependencies = Pick<AppDependencies, "stationService">;
 
@@ -16,7 +15,3 @@ export const createCitiesController = ({ stationService }: CitiesControllerDepen
     searchCities
   };
 };
-
-const defaultController = createCitiesController({ stationService: new StationService() });
-
-export const searchCities = defaultController.searchCities;

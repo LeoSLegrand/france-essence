@@ -3,8 +3,6 @@ import { Request, Response } from "express";
 import { FuelType } from "@prisma/client";
 
 import { AppDependencies } from "../config/dependencies";
-import { getAuthUserId } from "../middlewares/auth";
-import FillUpService from "../services/FillUpService";
 
 type FillUpsControllerDependencies = Pick<AppDependencies, "fillUpService"> & {
   getAuthUserId: (res: Response) => number | null;
@@ -87,11 +85,3 @@ export const createFillUpsController = ({ fillUpService, getAuthUserId }: FillUp
     createVehicleFillUp
   };
 };
-
-const defaultController = createFillUpsController({
-  fillUpService: new FillUpService(),
-  getAuthUserId
-});
-
-export const getVehicleFillUps = defaultController.getVehicleFillUps;
-export const createVehicleFillUp = defaultController.createVehicleFillUp;

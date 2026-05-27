@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 
 import { AppDependencies, DateRangeQuery } from "../config/dependencies";
-import { getAuthUserId } from "../middlewares/auth";
-import UserService from "../services/UserService";
 
 type UsersControllerDependencies = Pick<AppDependencies, "userService"> & {
   getAuthUserId: (res: Response) => number | null;
@@ -43,11 +41,3 @@ export const createUsersController = ({ userService, getAuthUserId }: UsersContr
     getMyStats
   };
 };
-
-const defaultController = createUsersController({
-  userService: new UserService(),
-  getAuthUserId
-});
-
-export const getMyProfile = defaultController.getMyProfile;
-export const getMyStats = defaultController.getMyStats;

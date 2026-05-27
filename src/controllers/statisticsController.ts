@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 
 import { FuelType } from "@prisma/client";
 import { AppDependencies } from "../config/dependencies";
-import StatisticsService from "../services/StatisticsService";
 
 type StatisticsControllerDependencies = Pick<AppDependencies, "statisticsService">;
 
@@ -33,7 +32,3 @@ export const createStatisticsController = ({ statisticsService }: StatisticsCont
     getPublicPriceStatistics
   };
 };
-
-const defaultController = createStatisticsController({ statisticsService: new StatisticsService() });
-
-export const getPublicPriceStatistics = defaultController.getPublicPriceStatistics;

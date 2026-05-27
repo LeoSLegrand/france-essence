@@ -21,6 +21,9 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/prisma.config.ts ./
+COPY --from=build /app/entrypoint.sh ./
+
+RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 3000
-CMD ["node", "dist/src/index.js"]
+ENTRYPOINT ["./entrypoint.sh"]

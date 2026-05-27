@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import { FuelType } from "@prisma/client";
 
 import { AppDependencies } from "../config/dependencies";
-import StationService from "../services/StationService";
 
 type StationsControllerDependencies = Pick<AppDependencies, "stationService">;
 
@@ -73,9 +72,3 @@ export const createStationsController = ({ stationService }: StationsControllerD
     getStationPriceHistory
   };
 };
-
-const defaultController = createStationsController({ stationService: new StationService() });
-
-export const getStationById = defaultController.getStationById;
-export const getStationsByRadius = defaultController.getStationsByRadius;
-export const getStationPriceHistory = defaultController.getStationPriceHistory;

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 
 import { AppDependencies } from "../config/dependencies";
-import AuthService from "../services/AuthService";
 
 type AuthControllerDependencies = Pick<AppDependencies, "authService">;
 
@@ -39,8 +38,3 @@ export const createAuthController = ({ authService }: AuthControllerDependencies
     login
   };
 };
-
-const defaultController = createAuthController({ authService: new AuthService() });
-
-export const signup = defaultController.signup;
-export const login = defaultController.login;

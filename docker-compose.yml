@@ -4,19 +4,26 @@ services:
     image: france-essence-api
     container_name: france_essence_api
     restart: unless-stopped
-    env_file:
-      - .env.docker
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: ${DATABASE_URL}
+      ENABLE_FUEL_IMPORT: ${ENABLE_FUEL_IMPORT}
+      FUEL_IMPORT_INTERVAL_MS: ${FUEL_IMPORT_INTERVAL_MS}
     ports:   
       - "3000:3000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:16-alpine
     container_name: france_essence_db
     restart: unless-stopped
-    env_file:
-      - .env.docker
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
