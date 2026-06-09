@@ -1,1 +1,1 @@
-Test pipeline = 3
+Test pipeline = 4
