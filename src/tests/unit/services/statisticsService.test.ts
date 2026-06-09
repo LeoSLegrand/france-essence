@@ -35,7 +35,7 @@ describe("StatisticsService", () => {
     });
 
     expect(prismaMock.$queryRaw).toHaveBeenCalledTimes(1);
-    expect(result.level).toBe("regional"); // --------------- Test sabotage --> expect(result.level).toBe("national");
+    expect(result.level).toBe("national"); // --------------- Test sabotage --> expect(result.level).toBe("regional");
     expect(result.departmentCode).toBeUndefined();
     expect(result.fuelType).toBeNull();
     expect(result.averages).toEqual([
