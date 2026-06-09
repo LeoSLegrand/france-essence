@@ -94,7 +94,7 @@ Pour preparer Jenkins en local, run le script :
 **Windows**
 Pour preparer Jenkins en local, run le script :
 ```powershell
-./jenkins-setup.sh
+./jenkins-setup.ps1
 ```
 
 Ensuite, configurer manuellement le job Jenkins pour pointer vers ce depot
